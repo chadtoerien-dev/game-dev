@@ -70,7 +70,7 @@ daytime trust action
 Preserved in:
 
 - `docs/milestones/0.1-causal-spine/README.md`
-- `artifacts/packages/TheVeil_CausalSpine_0_1.zip`
+- the original `TheVeil_CausalSpine_0_1.zip` nested in `artifacts/packages/TheVeil_FullProjectArchive_0_6.zip`
 - cumulative current source
 
 ## Output 4 — Round and Phase 0.2
@@ -80,7 +80,7 @@ Added phase authority, Round Director, GameState, persistent contestant state, c
 Preserved in:
 
 - `docs/milestones/0.2-round-phase/`
-- `artifacts/packages/TheVeil_RoundPhase_0_2.zip`
+- the original `TheVeil_RoundPhase_0_2.zip` nested in the 0.6 archive
 - cumulative current source
 
 ## Output 5 — Memory and Provenance 0.3
@@ -90,7 +90,7 @@ Added objective gameplay events, observer-specific memories, witnessing, reports
 Preserved in:
 
 - `docs/milestones/0.3-memory-provenance/`
-- `artifacts/packages/TheVeil_MemoryProvenance_0_3.zip`
+- the original `TheVeil_MemoryProvenance_0_3.zip` nested in the 0.6 archive
 - cumulative current source
 
 ## Output 6 — Claims, Contradictions and Voting 0.4
@@ -100,7 +100,7 @@ Added audience-specific claims, material contradictions, credibility consequence
 Preserved in:
 
 - `docs/milestones/0.4-claim-voting/`
-- `artifacts/packages/TheVeil_ClaimVoting_0_4.zip`
+- the original `TheVeil_ClaimVoting_0_4.zip` nested in the 0.6 archive
 - current `Source/TheVeil/`
 
 ## Output 7 — GitHub publication
@@ -124,7 +124,7 @@ Preserved in:
 - `docs/technical/`
 - `docs/production/`
 - `docs/milestones/`
-- `artifacts/packages/TheVeil_ContextArchive_0_5.zip`
+- the original `TheVeil_ContextArchive_0_5.zip` nested in the 0.6 archive
 
 ## Output 9 — Exhaustive audit 0.6
 

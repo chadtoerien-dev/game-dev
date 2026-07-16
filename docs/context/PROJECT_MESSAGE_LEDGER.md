@@ -13,20 +13,20 @@ This ledger maps every recoverable project-relevant message to durable repositor
 | 5 | 15 Jul 2026 | Assistant | Recommended UE production build, Windows-first architecture and browser access through Pixel Streaming rather than a browser-native production build | Recovered summary | `DECISION_LOG.md`, `TECHNICAL_ARCHITECTURE.md` |
 | 6 | 15 Jul 2026 | User | Requested a reusable master prompt for a new chat | Recovered summary | `MASTER_PROMPT.md` |
 | 7 | 15 Jul 2026 | User | Added Hitman and Hitman 2: Silent Assassin as gameplay, atmosphere and music references | Recovered summary | `REFERENCE_MUSIC_ADDENDUM.md`, `REFERENCE_TRANSLATION.md`, `ADAPTIVE_MUSIC_ARCHITECTURE.md` |
-| 8 | 16 Jul 2026 | User | Supplied the full master project brief | Verbatim | `MASTER_PROMPT_PART_01.md` to `MASTER_PROMPT_PART_04.md`; raw source in `artifacts/source/Pasted text.txt` |
+| 8 | 16 Jul 2026 | User | Supplied the full master project brief | Verbatim | `MASTER_PROMPT_PART_01.md` to `MASTER_PROMPT_PART_04.md`; exact uploaded source nested in `artifacts/packages/TheVeil_FullProjectArchive_0_6.zip` |
 | 9 | 16 Jul 2026 | Assistant | Product definition, ten risks, exact vertical slice, Unreal architecture, dependency map, roadmap, two sprints and foundation task | Canonical | `PRODUCT_VISION.md`, `VERTICAL_SLICE.md`, `TECHNICAL_ARCHITECTURE.md`, `ROADMAP.md`, `FOUNDATION_IMPLEMENTATION_GUIDE.md` |
 | 10 | 16 Jul 2026 | User | Supplied gameplay-reference, systemic night-operation, score, cinematic and Unreal-audio addendum | Verbatim | `REFERENCE_MUSIC_ADDENDUM_PART_01.md` and `PART_02.md` |
 | 11 | 16 Jul 2026 | Assistant | Reference translation, Opportunity Graph/Threads, social stealth, dynamic routines, evidence model, Survey Mode, cinematic grammar and adaptive music architecture | Canonical | `REFERENCE_TRANSLATION.md`, `ADAPTIVE_MUSIC_ARCHITECTURE.md` |
 | 12 | 16 Jul 2026 | User | “proceed” | Verbatim intent | Milestone 0.1 history |
-| 13 | 16 Jul 2026 | Assistant | Causal Spine 0.1 source, integration instructions and test matrix | Package + docs | `docs/milestones/0.1-causal-spine/`, `artifacts/packages/TheVeil_CausalSpine_0_1.zip` |
+| 13 | 16 Jul 2026 | Assistant | Causal Spine 0.1 source, integration instructions and test matrix | Package + docs | `docs/milestones/0.1-causal-spine/`; original 0.1 ZIP nested in the 0.6 archive |
 | 14 | 16 Jul 2026 | User | “proceed” | Verbatim intent | Milestone 0.2 history |
-| 15 | 16 Jul 2026 | Assistant | Round and Phase 0.2, persistent run state and checkpoints | Package + docs | `docs/milestones/0.2-round-phase/`, `artifacts/packages/TheVeil_RoundPhase_0_2.zip` |
+| 15 | 16 Jul 2026 | Assistant | Round and Phase 0.2, persistent run state and checkpoints | Package + docs | `docs/milestones/0.2-round-phase/`; original 0.2 ZIP nested in the 0.6 archive |
 | 16 | 16 Jul 2026 | User | “proceed” | Verbatim intent | Milestone 0.3 history |
-| 17 | 16 Jul 2026 | Assistant | Memory and Provenance 0.3, witnesses, rumours, lies and directed relationships | Package + docs | `docs/milestones/0.3-memory-provenance/`, `artifacts/packages/TheVeil_MemoryProvenance_0_3.zip` |
+| 17 | 16 Jul 2026 | Assistant | Memory and Provenance 0.3, witnesses, rumours, lies and directed relationships | Package + docs | `docs/milestones/0.3-memory-provenance/`; original 0.3 ZIP nested in the 0.6 archive |
 | 18 | 16 Jul 2026 | User | “proceed”; requested merge and commit to `chadtoerien-dev/game-dev` | Verbatim intent | `DELIVERY_AND_GITHUB_HISTORY.md` |
-| 19 | 16 Jul 2026 | Assistant | Claims, contradictions and voting 0.4; repository initialisation; branch audit; PR and merge | Package + source + docs | `docs/milestones/0.4-claim-voting/`, `artifacts/packages/TheVeil_ClaimVoting_0_4.zip`, repository source |
+| 19 | 16 Jul 2026 | Assistant | Claims, contradictions and voting 0.4; repository initialisation; branch audit; PR and merge | Package + source + docs | `docs/milestones/0.4-claim-voting/`, repository source; original 0.4 ZIP nested in the 0.6 archive |
 | 20 | 16 Jul 2026 | User | Requested comprehensive chat/context migration as Markdown | Verbatim intent | PR #2 history and context archive |
-| 21 | 16 Jul 2026 | Assistant | Added 37-document context archive and merged PR #2 | Canonical + package | `docs/`, `artifacts/packages/TheVeil_ContextArchive_0_5.zip`, `DELIVERY_AND_GITHUB_HISTORY.md` |
+| 21 | 16 Jul 2026 | Assistant | Added 37-document context archive and merged PR #2 | Canonical + package | `docs/`, `DELIVERY_AND_GITHUB_HISTORY.md`; original 0.5 ZIP nested in the 0.6 archive |
 | 22 | 16 Jul 2026 | User | Requested another entire-chat pass, all files, messages, prompts, outputs and relevant information; commit and merge to main | Verbatim intent | This 0.6 audit and archive |
 
 ## Assistant progress updates
