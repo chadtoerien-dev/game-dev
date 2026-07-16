@@ -23,17 +23,12 @@ This is the exhaustive public-project index for **The Veil**. It was created aft
 
 ## Raw and packaged sources
 
-The repository also contains:
+The repository contains:
 
-- `artifacts/source/Pasted text.txt` — exact uploaded source brief.
-- `artifacts/packages/TheVeil_CausalSpine_0_1.zip`
-- `artifacts/packages/TheVeil_RoundPhase_0_2.zip`
-- `artifacts/packages/TheVeil_MemoryProvenance_0_3.zip`
-- `artifacts/packages/TheVeil_ClaimVoting_0_4.zip`
-- `artifacts/packages/TheVeil_ContextArchive_0_5.zip`
-- `artifacts/packages/TheVeil_FullProjectArchive_0_6.zip`
+- `artifacts/packages/TheVeil_FullProjectArchive_0_6.zip` — verified bundle containing the exact uploaded `Pasted text.txt`, all historical generated ZIP deliverables from 0.1 through 0.5, and the audited Markdown context archive.
+- The authoritative master prompt is also preserved verbatim as ordered Markdown parts under `docs/context/` for direct review and version control.
 
-The ZIP files are historical delivery artefacts. Current source in the repository remains the development authority.
+The nested historical ZIP files are delivery snapshots. Current source in the repository remains the development authority.
 
 ## Preservation approach
 

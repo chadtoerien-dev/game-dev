@@ -46,7 +46,7 @@ Start with:
 5. [`docs/technical/TECHNICAL_ARCHITECTURE.md`](docs/technical/TECHNICAL_ARCHITECTURE.md)
 6. [`INTEGRATION.md`](INTEGRATION.md)
 
-The comprehensive context migration status is recorded in [`docs/context/MIGRATION_AUDIT.md`](docs/context/MIGRATION_AUDIT.md).
+The comprehensive context migration status is recorded in [`docs/context/MIGRATION_AUDIT.md`](docs/context/MIGRATION_AUDIT.md). The exhaustive message, output and file audit starts at [`docs/context/FULL_PROJECT_CONTEXT_INDEX.md`](docs/context/FULL_PROJECT_CONTEXT_INDEX.md), with historical deliverables under [`artifacts/`](artifacts/).
 
 ## Local setup
 
