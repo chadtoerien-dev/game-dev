@@ -11,6 +11,8 @@
 | 0.5 | `TheVeil_ContextArchive_0_5.zip` | Prompts, design, architecture, roadmap and milestone context |
 | 0.6 | `TheVeil_FullProjectArchive_0_6.zip` | Complete public project-context and artifact bundle from this audit |
 
+The 0.1–0.5 files are preserved byte-for-byte inside the directly committed 0.6 bundle.
+
 ## Repository publication history
 
 Repository: `chadtoerien-dev/game-dev`

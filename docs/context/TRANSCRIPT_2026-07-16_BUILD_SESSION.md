@@ -44,7 +44,7 @@ The user repeatedly said **proceed**. The assistant delivered:
 3. Memory and Provenance 0.3
 4. Claims, Contradictions and Voting 0.4
 
-**Bodies and files:** `../milestones/` and `../../artifacts/packages/`.
+**Bodies and files:** `../milestones/`; original milestone ZIPs are nested in `../../artifacts/packages/TheVeil_FullProjectArchive_0_6.zip`.
 
 ## Turn 11 — GitHub publication
 
@@ -60,7 +60,7 @@ The user repeatedly said **proceed**. The assistant delivered:
 
 **Assistant:** added the 0.5 context archive, opened PR #2 and merged it.
 
-**Package:** `artifacts/packages/TheVeil_ContextArchive_0_5.zip`.
+**Package:** the original `TheVeil_ContextArchive_0_5.zip`, nested inside `artifacts/packages/TheVeil_FullProjectArchive_0_6.zip`.
 
 ## Turn 13 — Exhaustive second pass
 
