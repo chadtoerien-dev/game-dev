@@ -2,7 +2,7 @@
 
 Unreal Engine 5 foundation for an original third-person social-deduction action RPG.
 
-The current codebase proves the causal spine that differentiates the project:
+The game’s causal spine is:
 
 ```text
 social action
@@ -12,38 +12,55 @@ social action
 → individual memories and rumours
 → claims and contradictions
 → explainable voting intentions
+→ Exile and persistent consequences
 ```
 
 ## Current milestone: 0.4 Claim, Contradiction and Voting
 
-Implemented systems:
+Implemented native foundations:
 
-- round and phase authority
-- checkpoint save and restoration
-- opportunity threads
-- routine and contextual access evaluation
-- evidence persistence and Dawn surfacing
-- gameplay events, witnessing and individual memory
-- information provenance, reports, rumours and lies
-- directed NPC-to-NPC relationships
-- public/private claims
-- contradiction detection and credibility consequences
-- data-driven, explainable voting intentions
-- deterministic vote locking
-- adaptive-audio state arbitration foundation
+- Round and phase authority
+- Checkpoint save and restoration
+- Opportunity Threads
+- Routine and contextual access evaluation
+- Evidence persistence and Dawn surfacing
+- Gameplay events, witnessing and individual memory
+- Information provenance, reports, rumours and lies
+- Directed NPC-to-NPC relationships
+- Public and private claims
+- Contradiction detection and credibility consequences
+- Data-driven, explainable voting intentions
+- Deterministic vote locking
+- Adaptive-audio state arbitration foundation
+
+## Project context
+
+The original prompts, design decisions and project-chat history are preserved in [`docs/context/README.md`](docs/context/README.md).
+
+Start with:
+
+1. [`docs/context/MASTER_PROMPT.md`](docs/context/MASTER_PROMPT.md)
+2. [`docs/context/REFERENCE_MUSIC_ADDENDUM.md`](docs/context/REFERENCE_MUSIC_ADDENDUM.md)
+3. [`docs/context/DECISION_LOG.md`](docs/context/DECISION_LOG.md)
+4. [`docs/design/VERTICAL_SLICE.md`](docs/design/VERTICAL_SLICE.md)
+5. [`docs/technical/TECHNICAL_ARCHITECTURE.md`](docs/technical/TECHNICAL_ARCHITECTURE.md)
+6. [`INTEGRATION.md`](INTEGRATION.md)
+
+The comprehensive context migration status is recorded in [`docs/context/MIGRATION_AUDIT.md`](docs/context/MIGRATION_AUDIT.md).
+
+## Local setup
+
+1. Install the selected Unreal Engine 5 version and supported Visual Studio C++ workload.
+2. Clone the repository with Git LFS installed.
+3. Generate project files from `TheVeil.uproject`.
+4. Build `TheVeilEditor` in Development Editor / Win64.
+5. Read [`INTEGRATION.md`](INTEGRATION.md).
+6. Run tests under `TheVeil.*` in Unreal’s Test Automation window.
 
 ## Important status
 
-This repository contains the cumulative native Unreal foundation and integration documentation. It has been structurally validated, but it has not been compiled in a local Unreal Engine 5.8 installation from this environment. Blueprint assets, maps, animation assets and final audio assets are not included.
+The native source has been structurally reviewed, but it was not compiled in a local Unreal Engine installation from the originating assistant environment. Blueprint assets, maps, StateTrees, animation assets, MetaSounds and final audio are not yet included.
 
-## Start here
+## Originality boundary
 
-1. Install Unreal Engine 5.8 and the supported Visual Studio C++ workload.
-2. Generate project files from `TheVeil.uproject`.
-3. Build `TheVeilEditor` in Development Editor / Win64.
-4. Read [`INTEGRATION.md`](INTEGRATION.md).
-5. Run the tests under `TheVeil.*` in Unreal's Test Automation window.
-
-## Design boundaries
-
-The project uses Hitman, Splinter Cell and Metal Gear Solid only as directional references for systemic stealth, readable security and cinematic tension. All setting, terminology, characters, missions, music and audiovisual expression must remain original.
+Hitman, Splinter Cell, Metal Gear Solid and modern action RPGs are directional references only. All setting, terminology, characters, missions, dialogue, music, UI and audiovisual expression must remain original.
