@@ -1,19 +1,9 @@
 # Historical Deliverable Artifacts
 
-This directory preserves the generated project files through one verified bundle:
+The current repository stores the authoritative Unreal source and the unpacked project context directly under `Source/`, `Config/` and `docs/`.
 
-- `packages/TheVeil_FullProjectArchive_0_6.zip`
+The generated delivery archives from milestones 0.1–0.6 are recorded in `docs/context/ARTIFACT_MANIFEST.md`, including byte sizes and SHA-256 hashes. They are historical delivery wrappers around content that is already represented in the repository and are not treated as the development authority.
 
-The bundle contains:
+The verified portable 0.6 archive is available from the project handoff response rather than committed through the GitHub connector, because the connector could not guarantee a byte-identical binary upload. A corrupt or unverified ZIP must never be committed merely to satisfy an archive checkbox.
 
-- The exact uploaded `Pasted text.txt` master brief
-- The original 0.1 Causal Spine ZIP
-- The original 0.2 Round and Phase ZIP
-- The original 0.3 Memory and Provenance ZIP
-- The original 0.4 Claim and Voting ZIP
-- The original 0.5 Context Archive ZIP
-- The audited public-project Markdown archive
-
-These are historical snapshots. Current repository source and maintained documents remain authoritative.
-
-See `docs/context/ARTIFACT_MANIFEST.md` for sizes, SHA-256 hashes and coverage.
+Current source and maintained Markdown remain authoritative.
