@@ -135,3 +135,19 @@ The documentation migration can be verified in GitHub. The gameplay implementati
 ## Audit conclusion
 
 The visible project prompts, decisions, design outputs, milestone history and current implementation status are now represented in durable repository documentation. Future contributors should no longer need the original ChatGPT thread to understand the project.
+
+## Second-pass 0.6 additions
+
+The exhaustive second pass added the remaining recoverable material:
+
+- Original uploaded `Pasted text.txt`
+- Historical ZIP deliverables 0.1 through 0.5
+- Full Project Archive 0.6
+- Message-by-message preservation ledger
+- Assistant-output archive
+- Earlier browser-to-Unreal recovered transcript
+- Main build-session transcript map
+- Delivery and GitHub history
+- SHA-256 artifact manifest
+
+This closes the previously identified file-level gap. The only non-verbatim material is earlier-thread wording that was not available as a complete transcript; it is explicitly marked as recovered summary.

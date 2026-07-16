@@ -21,6 +21,18 @@ When documents conflict, use this order:
 - [`MIGRATION_AUDIT.md`](MIGRATION_AUDIT.md): requirement-to-repository coverage and outstanding gaps.
 - [`AGENT_HANDOFF.md`](AGENT_HANDOFF.md): operating instructions for future AI or human contributors.
 
+## Exhaustive second-pass audit
+
+- [`FULL_PROJECT_CONTEXT_INDEX.md`](FULL_PROJECT_CONTEXT_INDEX.md)
+- [`PROJECT_MESSAGE_LEDGER.md`](PROJECT_MESSAGE_LEDGER.md)
+- [`ASSISTANT_OUTPUTS_ARCHIVE.md`](ASSISTANT_OUTPUTS_ARCHIVE.md)
+- [`DELIVERY_AND_GITHUB_HISTORY.md`](DELIVERY_AND_GITHUB_HISTORY.md)
+- [`ARTIFACT_MANIFEST.md`](ARTIFACT_MANIFEST.md)
+- [`TRANSCRIPT_2026-07-15_BROWSER_TO_UNREAL.md`](TRANSCRIPT_2026-07-15_BROWSER_TO_UNREAL.md)
+- [`TRANSCRIPT_2026-07-16_BUILD_SESSION.md`](TRANSCRIPT_2026-07-16_BUILD_SESSION.md)
+
+Historical generated files are preserved under [`../../artifacts/`](../../artifacts/).
+
 ## Design and implementation documents
 
 - [`../design/PRODUCT_VISION.md`](../design/PRODUCT_VISION.md)
