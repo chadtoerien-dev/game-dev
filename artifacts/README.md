@@ -1,10 +1,9 @@
 # Historical Deliverable Artifacts
 
-This directory preserves the original files generated during the project conversation.
+The current repository stores the authoritative Unreal source and the unpacked project context directly under `Source/`, `Config/` and `docs/`.
 
-- `source/Pasted text.txt` is the exact uploaded master brief source.
-- `packages/` contains every ZIP deliverable available in the working session.
+The generated delivery archives from milestones 0.1–0.6 are recorded in `docs/context/ARTIFACT_MANIFEST.md`, including byte sizes and SHA-256 hashes. They are historical delivery wrappers around content that is already represented in the repository and are not treated as the development authority.
 
-The archives are historical snapshots. Do not edit code inside ZIP files and treat it as current. Current repository source and documentation are authoritative.
+The verified portable 0.6 archive is available from the project handoff response rather than committed through the GitHub connector, because the connector could not guarantee a byte-identical binary upload. A corrupt or unverified ZIP must never be committed merely to satisfy an archive checkbox.
 
-See `docs/context/ARTIFACT_MANIFEST.md` for sizes, SHA-256 hashes and content coverage.
+Current source and maintained Markdown remain authoritative.

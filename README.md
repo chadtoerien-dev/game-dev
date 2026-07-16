@@ -35,7 +35,7 @@ Implemented native foundations:
 
 ## Project context
 
-The original prompts, design decisions and project-chat history are preserved in [`docs/context/README.md`](docs/context/README.md).
+The original prompts, decisions and project history are preserved in [`docs/context/README.md`](docs/context/README.md). The exhaustive message/output/file audit begins at [`docs/context/FULL_PROJECT_CONTEXT_INDEX.md`](docs/context/FULL_PROJECT_CONTEXT_INDEX.md).
 
 Start with:
 
@@ -46,20 +46,18 @@ Start with:
 5. [`docs/technical/TECHNICAL_ARCHITECTURE.md`](docs/technical/TECHNICAL_ARCHITECTURE.md)
 6. [`INTEGRATION.md`](INTEGRATION.md)
 
-The comprehensive context migration status is recorded in [`docs/context/MIGRATION_AUDIT.md`](docs/context/MIGRATION_AUDIT.md).
-
 ## Local setup
 
 1. Install the selected Unreal Engine 5 version and supported Visual Studio C++ workload.
-2. Clone the repository with Git LFS installed.
+2. Clone with Git LFS installed.
 3. Generate project files from `TheVeil.uproject`.
 4. Build `TheVeilEditor` in Development Editor / Win64.
 5. Read [`INTEGRATION.md`](INTEGRATION.md).
-6. Run tests under `TheVeil.*` in Unreal’s Test Automation window.
+6. Run tests under `TheVeil.*` in Unreal’s Automation window.
 
 ## Important status
 
-The native source has been structurally reviewed, but it was not compiled in a local Unreal Engine installation from the originating assistant environment. Blueprint assets, maps, StateTrees, animation assets, MetaSounds and final audio are not yet included.
+The native source has been structurally reviewed but was not compiled in a local Unreal installation from the originating assistant environment. Blueprint assets, maps, StateTrees, animation assets, MetaSounds and final audio are not yet included.
 
 ## Originality boundary
 
