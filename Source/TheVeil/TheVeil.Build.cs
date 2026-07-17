@@ -6,6 +6,10 @@ public class TheVeil : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
+        // The current source tree uses module-root include paths such as
+        // "Core/TVGameplayTypes.h" and "Voting/TVVotingProfile.h".
+        PublicIncludePaths.Add(ModuleDirectory);
+
         PublicDependencyModuleNames.AddRange(new string[]
         {
             "Core",

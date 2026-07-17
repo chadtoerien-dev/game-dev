@@ -205,7 +205,14 @@ void UTVPhaseSubsystem::HandleAsyncSaveComplete(const FString& SlotName, const i
 {
     bSaveInProgress = false;
     PendingSaveObject = nullptr;
-    UE_LOG(LogTemp, bSuccess ? Log : Error, TEXT("Save %s for slot %s, user %d."), bSuccess ? TEXT("completed") : TEXT("failed"), *SlotName, CompletedUserIndex);
+    if (bSuccess)
+    {
+        UE_LOG(LogTemp, Log, TEXT("Save completed for slot %s, user %d."), *SlotName, CompletedUserIndex);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Save failed for slot %s, user %d."), *SlotName, CompletedUserIndex);
+    }
     OnSaveCompleted.Broadcast(bSuccess);
     if (bSaveQueued)
     {
@@ -219,6 +226,13 @@ void UTVPhaseSubsystem::HandleAsyncLoadComplete(const FString& SlotName, const i
     UTVRunSaveGame* LoadedRun = Cast<UTVRunSaveGame>(LoadedGameData);
     const bool bSuccess = IsValid(LoadedRun) && LoadedRun->SaveVersion <= UTVRunSaveGame::CurrentSaveVersion;
     if (bSuccess) ActiveRunSave = LoadedRun;
-    UE_LOG(LogTemp, bSuccess ? Log : Error, TEXT("Load %s for slot %s, user %d."), bSuccess ? TEXT("completed") : TEXT("failed"), *SlotName, CompletedUserIndex);
+    if (bSuccess)
+    {
+        UE_LOG(LogTemp, Log, TEXT("Load completed for slot %s, user %d."), *SlotName, CompletedUserIndex);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Load failed for slot %s, user %d."), *SlotName, CompletedUserIndex);
+    }
     OnLoadCompleted.Broadcast(bSuccess);
 }
