@@ -1,0 +1,18 @@
+---
+description: Core operating rule for The Veil Unreal Engine project
+globs:
+alwaysApply: true
+---
+
+- Read `AGENTS.md` before planning or editing.
+- For a new session, read `docs/context/AGENT_HANDOFF.md`, `docs/production/ROADMAP.md`, and the relevant architecture or integration document.
+- Work only from the repository root. Before Git writes, run `git rev-parse --show-toplevel` and confirm it is the game-dev repository.
+- Use a task branch or worktree. Do not implement directly on `main`.
+- Plan first. State files in scope, acceptance criteria and verification commands before editing.
+- Keep changes bounded. Do not opportunistically refactor unrelated systems.
+- Never hand-edit Unreal binary assets (`.uasset`, `.umap`) or World Partition external actor/object files.
+- Build with `scripts/Build-TheVeil.ps1` and run `scripts/Run-TheVeilTests.ps1` before requesting review.
+- Do not report success unless the command was actually run and its result inspected.
+- Use an independent review model for non-trivial changes. Follow `docs/production/AI_AGENT_WORKFLOW.md`.
+- Preserve the game's information-provenance rules and original-IP boundary.
+- Use British English in documentation and player-facing text.
