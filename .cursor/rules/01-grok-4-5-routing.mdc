@@ -1,6 +1,6 @@
 ---
 description: Route suitable The Veil tasks to Cursor Grok 4.5
- globs:
+globs:
 alwaysApply: true
 ---
 
