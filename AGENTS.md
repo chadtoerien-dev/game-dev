@@ -30,6 +30,7 @@ Use this authority order when documents conflict:
 For multi-agent routing, delegation and review rules, read:
 
 - `docs/production/AI_AGENT_WORKFLOW.md`
+- `docs/production/GROK_4_5_ROUTING.md` when Cursor Grok 4.5 is available or under consideration
 - `docs/production/AGENT_DELEGATION_PROTOCOL.md`
 - `docs/production/TASK_BRIEF_TEMPLATE.md`
 
