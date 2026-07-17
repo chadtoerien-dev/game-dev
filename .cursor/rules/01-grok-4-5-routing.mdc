@@ -1,0 +1,13 @@
+---
+description: Route suitable The Veil tasks to Cursor Grok 4.5
+ globs:
+alwaysApply: true
+---
+
+- Read `docs/production/GROK_4_5_ROUTING.md` when selecting an agent or model.
+- Consider Grok 4.5 explicitly for difficult, long-running, multi-step repository investigations, integration work, evidence audits and cross-tool debugging.
+- Do not treat Grok 4.5 as a universal replacement for GPT-5.6 architecture, Claude Unreal C++, Composer bounded implementation, Gemini multimodal review or human Unreal Editor work.
+- Grok 4.5 may implement only after scope and architecture are approved and file ownership is exclusive.
+- A Grok 4.5 implementer must not act as the independent reviewer of its own work.
+- When Grok 4.5 is the better agent, stop and give Chad a ready-to-paste Cursor Grok 4.5 prompt using the repository routing document.
+- During milestone 0.5, use Grok 4.5 for an integration and evidence pass, then record a controlled comparison before promoting it to a wider primary role.
