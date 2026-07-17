@@ -1,6 +1,36 @@
-# Integration guide — The Veil 0.4
+# Integration Guide — The Veil 0.4
 
-This package is cumulative. Copy `Source/TheVeil/` and `Config/Tags/TheVeil_PhaseTags.ini`, then regenerate project files and build `TheVeilEditor` before editing Blueprints.
+This repository is cumulative. Regenerate project files when required and build `TheVeilEditor` before editing dependent Blueprints. The preferred build, test and launch commands are under `scripts/`.
+
+## Verified environment
+
+Verified on 17 July 2026:
+
+- Unreal Engine 5.8
+- Windows x64
+- MSVC toolchain `14.50.35717`
+- Windows SDK `10.0.22621.0`
+- successful `TheVeilEditor` Development/Win64 build
+- five passing `TheVeil.*` automation tests
+- successful `L_Dev_Sandbox` PIE smoke test
+
+Build:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".\scripts\Build-TheVeil.ps1"
+```
+
+Test:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".\scripts\Run-TheVeilTests.ps1"
+```
+
+Launch:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".\scripts\Launch-TheVeil.ps1"
+```
 
 ## Contestant knowledge components
 
@@ -18,7 +48,7 @@ Initial witness settings:
 
 Create a development bootstrap actor rather than using the Level Blueprint. Initialise observer-to-subject records through `TVRelationshipSubsystem`. The matrix is directional: `Eleanor -> Player` is not the same as `Player -> Eleanor`.
 
-Use the relationship subsystem as the authority for trust, suspicion, affinity, respect, fear and credibility. The compatibility values on `TVContestantStateComponent` should not drive new social logic.
+Use the relationship subsystem as the authority for trust, suspicion, affinity, respect, fear and credibility. Compatibility values on `TVContestantStateComponent` should not drive new social logic.
 
 ## Event and memory pipeline
 
@@ -40,13 +70,13 @@ For archive sabotage, use:
 
 The evidence record's `SourceContestantId` is hidden simulation truth. Only `AttributedContestantId` may become public knowledge.
 
-Expected test behaviour:
+Expected behaviour:
 
 - Eleanor sees the action and forms a first-hand memory about the player.
 - Marcus hears the action without automatically identifying the player.
-- reporting the memory to Marcus lowers confidence and records Eleanor as immediate source.
-- spreading it as a rumour to Beatrice increases transmission depth and distortion.
-- a deliberate lie can change the alleged subject without revealing its falsity to the recipient.
+- Reporting the memory to Marcus lowers confidence and records Eleanor as immediate source.
+- Spreading it as a rumour to Beatrice increases transmission depth and distortion.
+- A deliberate lie can change the alleged subject without revealing its falsity to the recipient.
 
 ## Checkpoint behaviour
 
@@ -89,7 +119,7 @@ For each voter, expose a development-only score breakdown:
 
 Do not display exact values in the release UI.
 
-## Required playable test
+## Required playable social test
 
 1. Eleanor witnesses archive sabotage.
 2. Eleanor publicly accuses the player.
@@ -103,9 +133,13 @@ Do not display exact values in the release UI.
 10. Enter Vote and confirm every NPC locks exactly one candidate.
 11. Save and restore; claims, contradictions and locked votes remain stable.
 
+This scenario is not yet embodied as a complete player-facing level sequence. It remains the target integration test for the Tribunal milestone.
+
 ## Automation tests
 
-Run from `Tools -> Test Automation`:
+Run from `Tools -> Session Frontend -> Automation`, or use the command-line test script.
+
+Expected tests:
 
 - `TheVeil.Phase.ShortLoop`
 - `TheVeil.Information.ProvenanceTransmission`
@@ -113,4 +147,8 @@ Run from `Tools -> Test Automation`:
 - `TheVeil.Claims.DirectContradiction`
 - `TheVeil.Claims.LocationContradiction`
 
-The repository has been structurally checked in this environment but must still be compiled and tested in a local Unreal Engine 5.8 installation.
+All five passed locally on 17 July 2026 with zero failures and zero skips.
+
+## Current playable boundary
+
+`/Game/Maps/L_Dev_Sandbox` exists, loads and passes a PIE smoke test. It does not yet contain the production player character, movement, interaction, embodied contestant, Tribunal or night-operation content. The next integration target is Playable Foundation 0.5 as defined in `docs/production/ROADMAP.md`.
