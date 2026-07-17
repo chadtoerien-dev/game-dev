@@ -1,179 +1,497 @@
-# Development Roadmap and Initial Backlog
+# The Veil Development Roadmap
 
-## Phase 0 — Production foundation
+Last updated: 17 July 2026
 
-**Objective:** reproducible project and build process.
+## Product destination
 
-Deliver a UE project, source-control rules, naming, folders and packaged Development build. A clean machine must be able to clone, generate, build, open and package.
+Deliver an original, polished 25–30 minute PC vertical slice of a third-person social-deduction action RPG in Unreal Engine 5.8.
 
-## Phase 1 — Movement and interaction
+The playable causal loop is:
 
-**Objective:** prove responsive third-person control.
+```text
+social action
+→ relationship, routine and access change
+→ challenge or night operation
+→ evidence and witnessed events
+→ individual memories, reports, rumours and lies
+→ public claims and contradictions
+→ explainable vote movement
+→ private vote lock and exile
+→ persistent consequences
+```
 
-Systems:
+The project already contains substantial native social logic, but the playable shell is behind. The roadmap therefore prioritises movement, interaction and embodied NPCs before expanding content or presentation.
 
-- Camera-relative movement
-- Acceleration and braking
-- Sprint, crouch and jump
-- Camera
-- Interaction trace
-- Reusable door
-- Development HUD
+## Status legend
 
-Acceptance: immediate movement, no stuck sprint, controller parity and stable packaged build.
+- **Complete:** built, tested and merged
+- **Verified locally:** built and tested on the owner's machine; confirm the corresponding commit is on `main`
+- **In progress:** approved current work
+- **Next:** ready to start after the preceding gate
+- **Later:** deliberately deferred
 
-## Phase 2 — Round and contestant foundation
+## Non-negotiable production principles
 
-**Objective:** represent eight contestants and authoritative phases.
+1. One complete round before more content.
+2. Mechanics and readability before final art.
+3. PC vertical slice before browser, mobile, console or VR production.
+4. Every milestone ends in build and test evidence.
+5. NPC decisions remain explainable and respect information boundaries.
+6. Originality is mandatory; references guide function and tone, not copied expression.
+7. No concurrent agents edit the same Unreal binary assets or source files.
+8. The human owner approves scope, canon, visual direction and merges.
 
-Systems:
+---
 
-- GameState and Round Director
-- Phase transitions and timers
-- Contestant profiles
-- Role assignment
-- Directed relationship matrix
-- Phase checkpoint
+# Foundation already delivered
 
-Acceptance: deterministic, logged, saveable transitions.
+## Milestone 0.1 — Causal Spine
 
-## Phase 3 — Social simulation
+**Status:** Complete
 
-**Objective:** prove persistent NPC-to-NPC opinion change.
+Proved:
 
-Systems:
+```text
+daytime trust action
+→ invitation
+→ target routine change
+→ contextual access
+→ operation
+→ evidence
+→ music-state request
+```
 
-- Relationships
-- Memories
-- Information provenance
-- Typed events
-- Social interpretation profiles
+## Milestone 0.2 — Round and Phase Authority
 
-Acceptance: the same event produces different reactions across personalities and every major decision has a debug explanation.
+**Status:** Complete
 
-## Phase 4 — NPC schedules and conversation
+Delivered:
 
-**Objective:** make free-roam contestants purposeful.
+- authoritative phase transitions
+- Round Director and GameState foundation
+- persistent contestant state
+- checkpoint save and restoration
+- Dawn surfacing
 
-Systems:
+## Milestone 0.3 — Memory and Provenance
 
-- StateTree
-- Utility goals
-- Navigation
-- Smart Objects
-- Conversation participation and reservation
-- Contextual dialogue actions
+**Status:** Complete
 
-Acceptance: NPCs seek others for intelligible reasons, communicate while the player is absent and avoid deadlocks.
+Delivered:
 
-## Phase 5 — Challenge
+- objective gameplay events
+- observer-specific memories
+- visual and auditory witnessing
+- reports, rumours and deliberate lies
+- information-provenance tracking
+- directed relationships
+- data-driven social interpretation
 
-**Objective:** connect physical performance to social consequence.
+## Milestone 0.4 — Claims, Contradictions and Voting
 
-Build the Reliquary Run with teams, carrying, shortcuts, cooperation, sabotage and reward assignment.
+**Status:** Verified locally; final GitHub reconciliation required
 
-## Phase 6 — Tribunal and voting
+Delivered:
 
-**Objective:** turn social state into a playable public decision.
+- public and private claims
+- audience-specific knowledge
+- direct and location contradictions
+- credibility and suspicion consequences
+- explainable vote scoring
+- commitments and group pressure
+- deterministic vote locking
+- five passing automation tests
+- successful UE5.8 editor build
+- successful editor launch and PIE smoke test
 
-Systems:
+The GitHub migration checklist must confirm the local UE5.8 repair commit and development map are on `main`.
 
-- Claims
-- Contradictions
-- Speaking priority
-- Player interruptions, defence and evidence
-- Live voting intentions
-- Vote lock
-- Exile
+---
 
-Acceptance: the player can legitimately move at least two NPC votes; outcomes are explainable without feeling deterministic.
+# Playable production sequence
 
-## Phase 7 — Night operation
+## Milestone 0.5 — Playable Foundation
 
-**Objective:** prove active dual-faction night gameplay.
+**Status:** Next
 
-Systems:
+**Objective:** turn `L_Dev_Sandbox` into a controllable third-person game rather than an editor-only map.
 
-- Target selection
-- Social access
-- Secret route
-- Guard perception
-- Protection and interception
-- Sabotage and contamination
-- Evidence and witnesses
+### Deliverables
 
-Acceptance: at least three distinct outcomes reach the following Dawn Assembly.
+- production C++ player character or pawn foundation
+- PlayerController
+- GameMode
+- PlayerStart
+- Enhanced Input actions and mapping context
+- camera-relative movement
+- acceleration and braking tuning
+- sprint
+- crouch
+- jump
+- mouse and controller look
+- stable spring-arm camera
+- development movement telemetry
 
-## Phase 8 — Complete round integration
+### Acceptance criteria
 
-**Objective:** run the full round without developer intervention.
+- the correct GameMode loads with the sandbox
+- the player spawns at a deliberate PlayerStart
+- WASD and controller movement are camera-relative
+- sprint cannot become stuck
+- crouch and jump transition cleanly
+- camera movement is smooth and does not visibly judder
+- collision prevents falling through the map
+- PIE starts and exits without a crash
+- editor target builds successfully
+- existing five automation tests remain green
+- new movement or input tests are added where practical
 
-Acceptance:
+### Explicit non-goals
 
-- Three consecutive complete runs
-- Stable phase transitions
-- No duplicated or lost state
-- Save and restore at phase boundaries
+- final animation set
+- parkour or climbing
+- combat
+- multiplayer replication
+- final character art
 
-## Phase 9 — Polish and optimisation
+## Milestone 0.6 — Interaction and Camera Feel
 
-**Objective:** raise presentation only after mechanics work.
+**Status:** Next after 0.5
 
-Systems:
+**Objective:** prove a responsive action-adventure interaction loop.
 
-- Animation and locomotion quality
-- Audio and adaptive score
-- Lighting
-- UI
-- Accessibility
-- Performance
-- Onboarding
+### Deliverables
 
-## Sprint 1 — Playable foundation
+- reusable interaction interface
+- camera-centred or character-centred interaction trace
+- focus and range validation
+- test door
+- one inspectable or collectible test object
+- clear development prompt
+- input buffering where necessary
+- camera collision and occlusion handling
+- interaction debug visualisation
 
-Two-week goal: a clean UE project that can be cloned, built, packaged and played with responsive movement and interaction.
+### Acceptance criteria
 
-Priority work:
+- the player can approach, focus and activate a test object
+- interaction cannot trigger through walls or outside range
+- keyboard and controller have parity
+- prompts update correctly as targets change
+- no repeated interaction from one input press
+- the result remains responsive under normal editor frame pacing
 
-- Pin engine and toolchain
-- Create C++ Third Person project
-- Configure Git and LFS
-- Create folders and naming rules
-- Greybox movement course
-- Tune movement
-- Interaction interface and door
-- Development HUD
-- Package and record performance baseline
-- Verify controller
+## Milestone 0.7 — Embodied Contestants
 
-## Sprint 2 — Round and contestant skeleton
+**Status:** Later
 
-Two-week goal: eight placeholders inside a phase-controlled simulation.
+**Objective:** place visible placeholder contestants into the sandbox and connect them to the native state model.
 
-Priority work:
+### Deliverables
 
-- Native phase state
-- Round Director
-- Contestant Primary Data Asset
-- Eight stable contestant IDs
-- Two-Veiled/six-Loyal seeded assignment
-- Directed relationships
-- Basic navigation
-- Minimal StateTree
-- One Build Rapport action
-- Relationship debug overlay
-- Checkpoint snapshot
-- Ten unattended cycles without deadlock
+- eight stable contestant identities
+- placeholder character actors
+- contestant state, memory and witness components
+- navigation mesh and basic navigation
+- simple StateTree or equivalent routine control
+- visible location and phase state
+- development relationship and memory overlay
 
-## Current milestone position
+### Acceptance criteria
 
-Milestones 0.1–0.4 implemented the native causal architecture ahead of the full playable content sequence. The next production task is Phase 6’s interactive Tribunal and Exile presentation, followed by the actual movement/level/Blueprint content required to play it in UE5.
+- all contestants spawn with stable IDs
+- no duplicate identity or missing state
+- contestants move without navigation deadlocks
+- witness components produce expected memories
+- directed relationships remain asymmetric
+- ten unattended short cycles complete without deadlock
 
-## Scope-control rules
+## Milestone 0.8 — Social Free-Roam Loop
 
-- Mechanics before estate size.
-- One challenge, one night location and one round.
-- No final art before the loop is stable.
-- No procedural dialogue generation in the slice.
-- No multiplayer, mobile, VR or browser deployment yet.
-- Every phase ends in something testable.
+**Status:** Later
+
+**Objective:** make player social actions change observable NPC behaviour and access.
+
+### Deliverables
+
+- conversation participation and reservation
+- Build Rapport action
+- accuse, defend, question and withdraw actions
+- charisma or influence presentation
+- Opportunity Thread activation
+- target routine changes
+- contextual invitations and access
+- private versus public audience handling
+- development explanation panel
+
+### Acceptance criteria
+
+- the same social event produces different reactions by personality
+- a successful relationship change unlocks one concrete opportunity
+- NPCs do not use knowledge they have not acquired
+- rumours visibly lose confidence and can distort
+- the player can understand why an NPC's behaviour changed
+
+## Milestone 0.9 — Interactive Tribunal and Exile
+
+**Status:** Later
+
+**Objective:** convert the existing claim and voting foundation into a playable public decision.
+
+### Deliverables
+
+- ceremonial Tribunal staging
+- speaking priority
+- player interruption, defence and challenge actions
+- evidence presentation
+- live but non-numeric vote-intention feedback
+- private vote lock
+- tie handling
+- exile presentation
+- optional faction reveal rule
+- persistent alliance and credibility consequences
+
+### Acceptance criteria
+
+- the player can legitimately move at least two NPC votes
+- only informed voters react to a claim or defence
+- contradictions are visible without exposing hidden simulation truth
+- every NPC locks exactly one eligible candidate
+- save and restore preserves claims, contradictions and votes
+- at least three materially different Tribunal outcomes are possible
+
+## Milestone 1.0 — Active Night Operation
+
+**Status:** Later
+
+**Objective:** prove that both factions have active, systemic night gameplay.
+
+### Deliverables
+
+- one original archive or equivalent operation space
+- target selection
+- social access route
+- secret or risky physical route
+- guard and witness perception
+- protection and interception
+- sabotage, contamination or prevention actions
+- evidence generation by approach
+- adaptive tension-state requests
+
+### Acceptance criteria
+
+- at least three approaches are viable
+- each approach produces different evidence or witness risk
+- a Loyal player can actively prevent or mitigate the operation
+- a Veiled player can execute it without a forced cutscene solution
+- at least three distinct outcomes reach the next Dawn
+
+## Milestone 1.1 — Complete Round Integration
+
+**Status:** Later
+
+**Objective:** run the entire round without developer intervention.
+
+### Required sequence
+
+```text
+Social Free Roam
+→ Night Planning
+→ Night Operation
+→ Dawn Assembly
+→ Challenge
+→ Social Fallout
+→ Tribunal
+→ Vote
+→ Exile
+→ checkpoint or next round
+```
+
+### Acceptance criteria
+
+- three consecutive complete runs
+- stable phase transitions
+- no duplicated or lost state
+- save and restore at phase boundaries
+- no deadlocked conversations or navigation
+- no omniscient NPC decisions
+- all consequential vote factors have a development explanation
+
+## Milestone 1.2 — Reliquary Run Challenge
+
+**Status:** Later
+
+**Objective:** connect physical performance and cooperation to social consequence.
+
+### Deliverables
+
+- team assignment
+- carrying and coordination
+- shortcuts and role specialisation
+- cooperation and limited sabotage
+- reward or access assignment
+- observed acts that enter the social memory system
+
+### Acceptance criteria
+
+- challenge performance changes later social state
+- at least two strategic approaches exist
+- sabotage is readable and produces evidence risk
+- the challenge fits the full round time budget
+
+## Milestone 1.3 — Vertical Slice Content Lock
+
+**Status:** Later
+
+**Objective:** lock one complete, replayable 25–30 minute slice.
+
+### Content limit
+
+- one estate or compact location set
+- eight contestants
+- two Veiled and six Loyal roles
+- one challenge
+- one night-operation location
+- one Tribunal and Exile sequence
+- one complete round
+- limited but meaningful dialogue content
+
+### Acceptance criteria
+
+- beginning-to-end playthrough without developer tools
+- at least three distinct strategic routes
+- role seed and social state create replay variation
+- onboarding is understandable to a first-time player
+- no placeholder system blocks completion
+
+## Milestone 1.4 — AAA Presentation Pass
+
+**Status:** Later
+
+**Objective:** raise fidelity only after the complete loop is stable.
+
+### Workstreams
+
+- locomotion animation quality
+- motion matching or selected locomotion solution
+- facial and conversation animation
+- cinematic camera grammar
+- lighting and atmosphere
+- materials and environment art
+- original adaptive score and sound design
+- MetaSounds, Quartz and Audio Modulation implementation
+- final UI and accessibility
+- VFX and interaction feedback
+
+### Acceptance criteria
+
+- consistent visual direction
+- original audiovisual identity
+- no obvious foot sliding or camera discontinuity
+- readable social and stealth states
+- stable frame pacing on target hardware
+- accessibility baseline for subtitles, controls, colour and motion
+
+## Milestone 1.5 — Optimisation, Packaging and External Test
+
+**Status:** Later
+
+**Objective:** produce a distributable Windows vertical-slice build.
+
+### Deliverables
+
+- cooked Development and Shipping builds
+- performance budgets and captures
+- crash logging
+- save migration test
+- clean-machine build instructions
+- external playtest package
+- issue triage and release checklist
+
+### Acceptance criteria
+
+- clean clone can generate, build, test and package
+- packaged build completes the full round
+- no fatal errors in repeated sessions
+- frame-time targets are met on selected minimum and recommended hardware
+- feedback from at least five external playtesters is triaged
+
+---
+
+# Near-term delivery plan
+
+## Sprint A — Repository and playable baseline
+
+**Goal:** complete migration and begin 0.5.
+
+- reconcile local commits with GitHub `main`
+- commit complete sandbox World Partition content
+- add launch, build and test scripts
+- verify Cursor rules and agent documents
+- create the 0.5 task brief
+- implement GameMode, controller, character and spawn
+
+## Sprint B — Movement quality
+
+**Goal:** responsive movement worth building on.
+
+- tune acceleration, braking and rotation
+- add sprint, crouch and jump
+- stabilise camera and collision
+- verify controller parity
+- add development telemetry
+- record movement video for independent review
+
+## Sprint C — Interaction
+
+**Goal:** one reusable interaction loop.
+
+- interaction interface and trace
+- test door and test object
+- focus, range and occlusion rules
+- prompt and debug feedback
+- automated and PIE tests
+
+## Sprint D — First contestants
+
+**Goal:** three embodied contestants prove the event-to-memory pipeline in the map.
+
+- Eleanor, Marcus and Beatrice placeholders
+- navigation and routines
+- witness and memory components
+- archive sabotage test event
+- relationship and memory debug overlay
+
+---
+
+# Quality gates for every milestone
+
+A milestone may move to complete only when all applicable gates pass:
+
+1. **Scope gate:** task matches the approved brief.
+2. **Source gate:** files are in the correct folders and generated files are excluded.
+3. **Build gate:** `TheVeilEditor` builds successfully.
+4. **Automation gate:** relevant tests pass.
+5. **PIE gate:** player-facing behaviour works in the editor without a fatal error.
+6. **Explainability gate:** AI decisions have development-visible reasons.
+7. **Save gate:** persistent changes survive save and restore where applicable.
+8. **Performance gate:** no unexplained regression in frame time or memory.
+9. **Originality gate:** no protected expression has been copied.
+10. **Review gate:** an independent agent and the human owner have reviewed the result.
+11. **Documentation gate:** handover, integration notes and roadmap are current.
+
+# Deferred platform strategy
+
+Unreal Engine can target additional platforms, but development remains focused on the Windows PC vertical slice.
+
+Deferred until after 1.5:
+
+- macOS production support
+- Linux production support
+- console certification
+- mobile adaptation
+- browser or Pixel Streaming delivery
+- VR or spatial-computing adaptation
+- user-generated metaverse deployment
+
+Each future platform requires a separate feasibility, performance, control and commercial assessment. It is not a free export step.
