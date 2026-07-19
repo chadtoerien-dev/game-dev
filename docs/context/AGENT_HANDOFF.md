@@ -1,6 +1,6 @@
 # Agent and Contributor Handover
 
-Last updated: 17 July 2026
+Last updated: 19 July 2026
 
 ## Mission
 
@@ -18,7 +18,7 @@ The intended experience combines:
 
 ## Executive state
 
-The native social-simulation foundation has reached milestone **0.4** and now builds successfully in Unreal Engine 5.8 on the owner's Windows machine.
+The native social-simulation foundation has reached milestone **0.4**. The native character, PlayerController and GameMode for milestone **0.5** are implemented and verified locally; Editor assets, map wiring and human PIE acceptance remain.
 
 Verified on 17 July 2026:
 
@@ -30,7 +30,17 @@ Verified on 17 July 2026:
 - `L_Dev_Sandbox` loaded
 - Play-in-Editor started and exited without a crash or fatal error
 
-The project is technically alive, but it is not yet a playable action RPG. The social logic is ahead of the player, camera, movement, interaction, embodied NPC and presentation layers.
+Verified on 19 July 2026:
+
+- `TheVeilEditor` Development/Win64 build succeeded
+- all seven `TheVeil.*` automation tests passed with zero failures and zero skips
+- manifest-driven Editor setup completed an in-memory nine-asset rehearsal with no persisted Content or map mutation
+- setup dry-run correctly identified five Input Actions, one Input Mapping Context and three Blueprints to create
+- read-only validation loaded `L_Dev_Sandbox`, found one PlayerStart and zero placed auto-possessed pawns
+- the intended GameMode override and all nine manifest-owned assets remain absent until the human binary checkpoint
+- King’s College, Cambridge is the approved one-to-one-scale, maximum-source-fidelity architectural basis for the bounded vertical-slice footprint
+
+The native playable shell now exists, but the saved sandbox is not yet a playable action RPG. The next gate is one human-owned Editor/PIE session using the checked setup and validation scripts.
 
 ## Repository and local environment
 
@@ -153,6 +163,8 @@ Expected tests:
 - `TheVeil.Information.InterpretationRuleSelection`
 - `TheVeil.Claims.DirectContradiction`
 - `TheVeil.Claims.LocationContradiction`
+- `TheVeil.PlayableFoundation.CharacterDefaults`
+- `TheVeil.PlayableFoundation.GameModeDefaults`
 
 ## Current content state
 
@@ -184,7 +196,7 @@ At the verification point, content comprised approximately 145 files and 31.24 M
 /Game/Maps/L_Dev_Sandbox.L_Dev_Sandbox
 ```
 
-The sandbox can enter and exit PIE, but there is not yet a production player character, movement stack or gameplay scene.
+The sandbox can enter and exit PIE. Native player, movement, camera and GameMode classes exist, but the saved map does not yet reference their derived Blueprint and input assets.
 
 ## Native architecture implemented
 
@@ -275,8 +287,8 @@ After that:
 ## Known limitations
 
 - No polished player locomotion or animation stack
-- No production GameMode or player pawn
-- No final input mapping assets
+- No saved sandbox GameMode override or derived playable Blueprints
+- No persisted Enhanced Input assets or mapping context
 - No embodied NPC StateTrees in the saved sandbox
 - No playable conversation interface
 - No interactive Tribunal UI
@@ -286,17 +298,16 @@ After that:
 - No packaged Development build yet
 - No CI runner currently proves the Windows UE build on every PR
 
-## First task for Cursor
+## Immediate human checkpoint
 
-Create a task from `docs/production/TASK_BRIEF_TEMPLATE.md` titled:
+Use the preferred automation route in `INTEGRATION.md`:
 
-```text
-Implement Playable Foundation 0.5: third-person character, camera and input
-```
-
-Use GPT-5.6 Sol for the architecture and acceptance plan, Claude Sonnet 5 for the primary UE C++ implementation, Composer 2.5 for bounded scripts/tests or follow-up edits, and Gemini as the independent multimodal reviewer of the resulting editor and PIE captures.
-
-Do not let multiple agents edit the same character, controller, GameMode or input files in parallel.
+1. review the dry run and execute `Prepare-PlayableFoundationEditor.ps1 -Apply` with Unreal Editor closed;
+2. open the Editor, approve a temporary visual, set the sandbox GameMode override and inspect the existing PlayerStart for walkable-ground clearance;
+3. save the map and legitimate World Partition companions, then review the complete binary diff;
+4. run `Validate-PlayableFoundationEditor.ps1` with the Editor closed;
+5. complete the keyboard/controller, camera collision, focus-loss and two-minute PIE checklist;
+6. return the structural report, capture, Editor log and exact binary file list for independent review.
 
 ## Definition of done for every milestone
 

@@ -90,6 +90,42 @@ Sprint intentionally has no toggle trigger: the controller handles `Started`, `C
 
 Do not set Auto Possess Player on a placed pawn. Standard GameMode spawning at the one PlayerStart is the sole player-spawn path and should produce exactly one controlled pawn.
 
+## Preferred Playable Foundation automation route
+
+The manual settings above remain the authoritative fallback. The preferred route uses `scripts/PlayableFoundation/playable-foundation-manifest.json` so input and Blueprint defaults are reproducible.
+
+1. With Unreal Editor closed, preview the exact asset operations:
+
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File ".\scripts\Prepare-PlayableFoundationEditor.ps1"
+   ```
+
+2. Review `Saved/PlayableFoundation/setup-report.json`. The dry run must report `map_mutated: false` and only the five Input Actions, `IMC_Player` and three derived Blueprints.
+3. Apply the reviewed manifest:
+
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File ".\scripts\Prepare-PlayableFoundationEditor.ps1" -Apply
+   ```
+
+   Apply replaces the mappings inside the manifest-owned `IMC_Player` with the exact declared set. Keep unrelated input in a different mapping context. The command refuses to run beside an open Editor and does not load or save a map.
+4. Open Unreal Editor. Add or approve the collision-free temporary visual on `BP_TheVeilCharacter`; the setup tool deliberately does not choose visual content.
+5. Open `L_Dev_Sandbox`, set World Settings -> GameMode Override to `BP_TheVeilGameMode`, load the intended World Partition region and inspect the existing PlayerStart. Keep exactly one, move it only when required for walkable-ground and capsule clearance, and confirm no `BADsize` warning.
+6. Use `Save All`, then review every binary and World Partition companion file in Git before staging.
+7. Close Unreal Editor and run structural validation:
+
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File ".\scripts\Validate-PlayableFoundationEditor.ps1"
+   ```
+
+8. Run the manual PIE checklist below. Structural validation cannot prove camera feel, collision judder, physical controller input, focus-loss recovery or soak stability.
+9. After PIE evidence, run the complete non-interactive gate:
+
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File ".\scripts\Verify-PlayableFoundation.ps1"
+   ```
+
+Generated reports and commandlet logs are under ignored `Saved/PlayableFoundation/`. The checked scripts invoke the installed UE 5.8 Python Editor plugin only for the commandlet; they do not add a permanent project plugin or config dependency.
+
 ## World Partition save expectations
 
 Use `Save All` after the human-owned Editor session. Review the complete Git file list before staging. The expected binary changes include the five Input Actions, one Input Mapping Context, three Blueprints, `Content/Maps/L_Dev_Sandbox.umap`, and any World Partition external actor/object files Unreal legitimately updates for the PlayerStart or map settings. Preserve opaque files under `Content/__ExternalActors__/`, `Content/__ExternalObjects__/` and the map HLOD assets; never delete or hand-edit them to make the diff look smaller.
@@ -234,6 +270,18 @@ Expected tests:
 
 All seven passed locally on 18 July 2026 with zero failures and zero skips.
 
+## 19 July 2026 non-human verification evidence
+
+- UE API capability probe: UE `5.8.0-55116800`; native character, controller and GameMode classes loaded; transient Input Action, mapping, key and modifier construction succeeded.
+- Setup dry run: `dry_run_complete`; nine bounded assets reported; `map_mutated: false`.
+- In-memory apply rehearsal: all five Input Actions, thirteen exact mappings and three derived Blueprints created and wired; `probe_applied_in_memory`; `content_persisted: false`; `map_mutated: false`; the Git `Content` status was empty before and after.
+- Read-only sandbox validation: map loaded; one PlayerStart; zero placed auto-possessed pawns; nine assets and the GameMode override still correctly reported absent before the human checkpoint.
+- Build: `Saved/BuildLogs/TheVeilEditor-Development-20260719-010117.log` reports `Result: Succeeded`.
+- Automation: `Saved/AutomationReports/20260719-010129/index.json` reports 7 succeeded, 0 failed and 0 not run.
+- Combined command: `powershell -ExecutionPolicy Bypass -File ".\scripts\Verify-PlayableFoundation.ps1" -AllowIncompleteEditorIntegration` completed successfully.
+
+Reports and logs under `Saved/` are local evidence and remain excluded from source control. Re-run the combined command without the allow-incomplete switch after the binary integration session.
+
 ## Current playable boundary
 
-`/Game/Maps/L_Dev_Sandbox` exists, loads and passed the pre-0.5 PIE smoke test. The native character, PlayerController and GameMode now build and pass automation, but the map does not yet contain the human-created Enhanced Input assets, derived Blueprints, GameMode override or deliberate PlayerStart required for playable acceptance. Interaction, embodied contestant, Tribunal and night-operation content also remain future milestones. The next checkpoint is the human Editor stage for Playable Foundation 0.5 as defined above and in `docs/production/ROADMAP.md`.
+`/Game/Maps/L_Dev_Sandbox` exists, loads and passed the pre-0.5 PIE smoke test. The native character, PlayerController and GameMode build and pass automation. The 19 July read-only validator found one loaded PlayerStart and zero placed auto-possessed pawns, but the nine manifest-owned input/Blueprint assets and intended GameMode override are absent; PlayerStart clearance also remains a viewport judgement. The automation package now prepares and validates the non-map assets, leaving binary apply/review, map ownership, PIE feel and capture evidence for the human checkpoint. Interaction, embodied contestant, Tribunal and night-operation content remain future milestones.

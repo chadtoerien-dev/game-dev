@@ -112,7 +112,7 @@ The GitHub migration checklist must confirm the local UE5.8 repair commit and de
 
 ## Milestone 0.5 — Playable Foundation
 
-**Status:** Next
+**Status:** In progress — native source and automation verified locally; human Editor/PIE gate pending
 
 **Objective:** turn `L_Dev_Sandbox` into a controllable third-person game rather than an editor-only map.
 

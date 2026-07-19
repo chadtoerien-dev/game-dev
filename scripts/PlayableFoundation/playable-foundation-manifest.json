@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "input_actions": [
+    {
+      "asset": "/Game/TheVeil/Input/IA_Move",
+      "value_type": "AXIS2D",
+      "accumulation_behavior": "CUMULATIVE"
+    },
+    {
+      "asset": "/Game/TheVeil/Input/IA_Look",
+      "value_type": "AXIS2D",
+      "accumulation_behavior": "TAKE_HIGHEST_ABSOLUTE_VALUE"
+    },
+    {
+      "asset": "/Game/TheVeil/Input/IA_Jump",
+      "value_type": "BOOLEAN",
+      "accumulation_behavior": "TAKE_HIGHEST_ABSOLUTE_VALUE"
+    },
+    {
+      "asset": "/Game/TheVeil/Input/IA_Sprint",
+      "value_type": "BOOLEAN",
+      "accumulation_behavior": "TAKE_HIGHEST_ABSOLUTE_VALUE"
+    },
+    {
+      "asset": "/Game/TheVeil/Input/IA_Crouch",
+      "value_type": "BOOLEAN",
+      "accumulation_behavior": "TAKE_HIGHEST_ABSOLUTE_VALUE"
+    }
+  ],
+  "mapping_context": {
+    "asset": "/Game/TheVeil/Input/IMC_Player",
+    "mappings": [
+      {
+        "action": "/Game/TheVeil/Input/IA_Move",
+        "key": "W",
+        "modifiers": [
+          {
+            "type": "swizzle",
+            "order": "YXZ"
+          }
+        ]
+      },
+      {
+        "action": "/Game/TheVeil/Input/IA_Move",
+        "key": "S",
+        "modifiers": [
+          {
+            "type": "negate"
+          },
+          {
+            "type": "swizzle",
+            "order": "YXZ"
+          }
+        ]
+      },
+      {
+        "action": "/Game/TheVeil/Input/IA_Move",
+        "key": "A",
+        "modifiers": [
+          {
+            "type": "negate"
+          }
+        ]
+      },
+      {
+        "action": "/Game/TheVeil/Input/IA_Move",
+        "key": "D",
+        "modifiers": []
+      },
+      {
+        "action": "/Game/TheVeil/Input/IA_Move",
+        "key": "Gamepad_Left2D",
+        "modifiers": [
+          {
+            "type": "dead_zone",
+            "mode": "RADIAL",
+            "lower_threshold": 0.2,
+            "upper_threshold": 1.0
+          }
+        ]
+      },
+      {
+        "action": "/Game/TheVeil/Input/IA_Look",
+        "key": "Mouse2D",
+        "modifiers": []
+      },
+      {
+        "action": "/Game/TheVeil/Input/IA_Look",
+        "key": "Gamepad_Right2D",
+        "modifiers": [
+          {
+            "type": "dead_zone",
+            "mode": "RADIAL",
+            "lower_threshold": 0.2,
+            "upper_threshold": 1.0
+          },
+          {
+            "type": "scalar",
+            "x": 1.25,
+            "y": 1.0,
+            "z": 1.0
+          }
+        ]
+      },
+      {
+        "action": "/Game/TheVeil/Input/IA_Jump",
+        "key": "SpaceBar",
+        "modifiers": []
+      },
+      {
+        "action": "/Game/TheVeil/Input/IA_Jump",
+        "key": "Gamepad_FaceButton_Bottom",
+        "modifiers": []
+      },
+      {
+        "action": "/Game/TheVeil/Input/IA_Sprint",
+        "key": "LeftShift",
+        "modifiers": []
+      },
+      {
+        "action": "/Game/TheVeil/Input/IA_Sprint",
+        "key": "Gamepad_LeftThumbstick",
+        "modifiers": []
+      },
+      {
+        "action": "/Game/TheVeil/Input/IA_Crouch",
+        "key": "LeftControl",
+        "modifiers": []
+      },
+      {
+        "action": "/Game/TheVeil/Input/IA_Crouch",
+        "key": "Gamepad_FaceButton_Right",
+        "modifiers": []
+      }
+    ]
+  },
+  "blueprints": {
+    "character": {
+      "asset": "/Game/TheVeil/Characters/BP_TheVeilCharacter",
+      "parent_class": "/Script/TheVeil.TheVeilCharacter"
+    },
+    "controller": {
+      "asset": "/Game/TheVeil/Core/BP_TheVeilPlayerController",
+      "parent_class": "/Script/TheVeil.TheVeilPlayerController",
+      "defaults": {
+        "player_mapping_context": "/Game/TheVeil/Input/IMC_Player",
+        "move_action": "/Game/TheVeil/Input/IA_Move",
+        "look_action": "/Game/TheVeil/Input/IA_Look",
+        "jump_action": "/Game/TheVeil/Input/IA_Jump",
+        "sprint_action": "/Game/TheVeil/Input/IA_Sprint",
+        "crouch_action": "/Game/TheVeil/Input/IA_Crouch"
+      }
+    },
+    "game_mode": {
+      "asset": "/Game/TheVeil/Core/BP_TheVeilGameMode",
+      "parent_class": "/Script/TheVeil.TheVeilGameMode",
+      "defaults": {
+        "default_pawn_class": "/Game/TheVeil/Characters/BP_TheVeilCharacter",
+        "player_controller_class": "/Game/TheVeil/Core/BP_TheVeilPlayerController",
+        "game_state_class": "/Script/TheVeil.TheVeilGameState"
+      }
+    }
+  },
+  "map": {
+    "asset": "/Game/Maps/L_Dev_Sandbox",
+    "game_mode_override": "/Game/TheVeil/Core/BP_TheVeilGameMode",
+    "player_start_count": 1,
+    "placed_auto_possessed_pawn_count": 0
+  },
+  "human_only": [
+    "Add and approve a collision-free temporary visual on BP_TheVeilCharacter.",
+    "Set the sandbox GameMode override and save the map and legitimate World Partition companions.",
+    "Place exactly one PlayerStart on walkable ground with capsule clearance and no BADsize warning.",
+    "Judge architectural fidelity and record every deliberate deviation from the King’s College source baseline.",
+    "Run keyboard and controller PIE acceptance, focus-loss recovery, the two-minute soak, and capture evidence."
+  ]
+}

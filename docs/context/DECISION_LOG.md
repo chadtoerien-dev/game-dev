@@ -12,6 +12,7 @@ This file records accepted decisions that should survive across chats, contribut
 | Preserve later console viability | Avoid architecture that depends unnecessarily on PC-only assumptions | Accepted |
 | Treat browser access as Pixel Streaming, not the main native build | Highest-fidelity browser experience without compromising the production renderer | Accepted |
 | Build one 25–30-minute round before expanding the estate | Proves the core game and controls scope | Accepted |
+| Base the bounded vertical-slice estate on a maximum-fidelity, one-to-one-scale reconstruction of King’s College, Cambridge | Establishes a concrete architectural and spatial target while preserving milestone scope; unverified or unauthorised elements remain documented interpretations | Accepted by Chad, 19 July 2026 |
 | Use eight contestants: two Veiled and six Loyal | Small enough for a polished slice; large enough for social structure | Accepted |
 | Support either player faction | Both Loyal and Veiled must have active day and night gameplay | Accepted |
 
