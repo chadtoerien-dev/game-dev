@@ -18,7 +18,7 @@ The intended experience combines:
 
 ## Executive state
 
-The native social-simulation foundation has reached milestone **0.4**. The native character, PlayerController and GameMode for milestone **0.5** are implemented and verified locally; Editor assets, map wiring and human PIE acceptance remain.
+The native social-simulation foundation has reached milestone **0.4**. The native and saved structural integration for milestone **0.5** are implemented and verified locally; subjective Editor/PIE acceptance and independent review remain.
 
 Verified on 17 July 2026:
 
@@ -33,14 +33,17 @@ Verified on 17 July 2026:
 Verified on 19 July 2026:
 
 - `TheVeilEditor` Development/Win64 build succeeded
-- all seven `TheVeil.*` automation tests passed with zero failures and zero skips
-- manifest-driven Editor setup completed an in-memory nine-asset rehearsal with no persisted Content or map mutation
-- setup dry-run correctly identified five Input Actions, one Input Mapping Context and three Blueprints to create
-- read-only validation loaded `L_Dev_Sandbox`, found one PlayerStart and zero placed auto-possessed pawns
-- the intended GameMode override and all nine manifest-owned assets remain absent until the human binary checkpoint
+- all nine `TheVeil.*` automation tests passed with zero failures and zero skips, including movement-basis and sprint/crouch/reset transition coverage
+- manifest-driven Editor setup persisted five Input Actions, one Input Mapping Context and three derived Blueprints
+- `BP_TheVeilCharacter` contains one collision-free, navigation-neutral temporary ellipsoid visual attached to the native capsule
+- `L_Dev_Sandbox` persists `BP_TheVeilGameMode`, one loaded PlayerStart and zero placed auto-possessed pawns
+- strict read-only structural validation passed every automated check and dirtied neither map nor content
+- final build evidence: `Saved/BuildLogs/TheVeilEditor-Development-20260719-015835.log`
+- final automation evidence: `Saved/AutomationReports/20260719-015856` (9 succeeded, 0 failed, 0 skipped)
+- structural evidence: `Saved/PlayableFoundation/validation-report.json` (`automated_status: pass`, 0 failures)
 - King’s College, Cambridge is the approved one-to-one-scale, maximum-source-fidelity architectural basis for the bounded vertical-slice footprint
 
-The native playable shell now exists, but the saved sandbox is not yet a playable action RPG. The next gate is one human-owned Editor/PIE session using the checked setup and validation scripts.
+The saved playable shell now exists. The next gate is a human Editor/PIE acceptance session for physical controller parity, camera feel/collision, focus-loss recovery, spawn clearance, the two-minute soak and capture evidence.
 
 ## Repository and local environment
 
@@ -287,8 +290,8 @@ After that:
 ## Known limitations
 
 - No polished player locomotion or animation stack
-- No saved sandbox GameMode override or derived playable Blueprints
-- No persisted Enhanced Input assets or mapping context
+- No approved physical-controller or camera-feel evidence for the saved playable shell
+- No human-approved PlayerStart clearance/`BADsize` evidence or two-minute PIE capture
 - No embodied NPC StateTrees in the saved sandbox
 - No playable conversation interface
 - No interactive Tribunal UI
@@ -302,12 +305,11 @@ After that:
 
 Use the preferred automation route in `INTEGRATION.md`:
 
-1. review the dry run and execute `Prepare-PlayableFoundationEditor.ps1 -Apply` with Unreal Editor closed;
-2. open the Editor, approve a temporary visual, set the sandbox GameMode override and inspect the existing PlayerStart for walkable-ground clearance;
-3. save the map and legitimate World Partition companions, then review the complete binary diff;
-4. run `Validate-PlayableFoundationEditor.ps1` with the Editor closed;
-5. complete the keyboard/controller, camera collision, focus-loss and two-minute PIE checklist;
-6. return the structural report, capture, Editor log and exact binary file list for independent review.
+1. review the checked binary list and strict structural report;
+2. open the Editor and inspect the existing PlayerStart for walkable-ground clearance and absence of `BADsize` without moving it unless necessary;
+3. approve or replace the collision-free temporary visual without adding gameplay or collision authority;
+4. complete the keyboard/controller, camera collision, focus-loss and two-minute PIE checklist;
+5. return the capture, Editor log and any legitimate post-inspection binary changes for independent review.
 
 ## Definition of done for every milestone
 

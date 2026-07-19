@@ -64,6 +64,20 @@ def validate_manifest_scope(manifest: dict) -> None:
     if manifest["map"]["asset"] != "/Game/Maps/L_Dev_Sandbox":
         raise PermissionError("Only L_Dev_Sandbox may be inspected by this validator")
 
+    placeholder = blueprint_definitions["character"].get("placeholder_visual", {})
+    if placeholder != {
+        "component_name": "PlaceholderVisual",
+        "component_class": "/Script/Engine.StaticMeshComponent",
+        "attach_to": "CapsuleComponent",
+        "mesh": "/Engine/BasicShapes/Sphere.Sphere",
+        "relative_location": {"x": 0.0, "y": 0.0, "z": 0.0},
+        "relative_rotation": {"pitch": 0.0, "yaw": 0.0, "roll": 0.0},
+        "relative_scale": [0.84, 0.84, 1.92],
+        "collision_profile": "NoCollision",
+        "can_ever_affect_navigation": False,
+    }:
+        raise PermissionError("Character placeholder visual differs from the authorised contract")
+
 
 def object_path_for_asset(asset_path: str) -> str:
     return f"{asset_path}.{asset_path.rsplit('/', 1)[-1]}"
@@ -162,6 +176,20 @@ class Validator:
                 actual_accumulation == definition["accumulation_behavior"],
                 definition["accumulation_behavior"],
                 actual_accumulation,
+            )
+            triggers = action.get_editor_property("triggers")
+            modifiers = action.get_editor_property("modifiers")
+            self.check(
+                f"input_action.action_level_triggers:{asset_path}",
+                len(triggers) == 0,
+                0,
+                len(triggers),
+            )
+            self.check(
+                f"input_action.action_level_modifiers:{asset_path}",
+                len(modifiers) == 0,
+                0,
+                len(modifiers),
             )
 
     @staticmethod
@@ -263,6 +291,133 @@ class Validator:
         )
         return generated_class if derives else None
 
+    @staticmethod
+    def blueprint_subobjects(blueprint: Any) -> list[tuple[Any, str, Any, str | None]]:
+        subsystem = unreal.get_engine_subsystem(unreal.SubobjectDataSubsystem)
+        library = unreal.SubobjectDataBlueprintFunctionLibrary
+        snapshots = []
+        for handle in subsystem.k2_gather_subobject_data_for_blueprint(blueprint):
+            data = library.get_data(handle)
+            parent_handle = library.get_parent_handle(data)
+            parent_name = None
+            if library.is_handle_valid(parent_handle):
+                parent_data = library.get_data(parent_handle)
+                parent_name = str(library.get_variable_name(parent_data))
+            snapshots.append(
+                (
+                    handle,
+                    str(library.get_variable_name(data)),
+                    library.get_object_for_blueprint(data, blueprint),
+                    parent_name,
+                )
+            )
+        return snapshots
+
+    def validate_character_placeholder(self, definition: dict) -> None:
+        blueprint = load_asset_if_present(definition["asset"])
+        if not isinstance(blueprint, unreal.Blueprint):
+            return
+
+        visual = definition["placeholder_visual"]
+        matches = [
+            (component, parent_name)
+            for _, variable_name, component, parent_name in self.blueprint_subobjects(blueprint)
+            if variable_name == visual["component_name"]
+        ]
+        self.check(
+            "blueprint.character.placeholder_visual.count",
+            len(matches) == 1,
+            1,
+            len(matches),
+        )
+        if len(matches) != 1:
+            return
+
+        component, parent_name = matches[0]
+        self.check(
+            "blueprint.character.placeholder_visual.class",
+            isinstance(component, unreal.StaticMeshComponent),
+            visual["component_class"],
+            identity(component.get_class()) if component else None,
+        )
+        if not isinstance(component, unreal.StaticMeshComponent):
+            return
+
+        self.check(
+            "blueprint.character.placeholder_visual.parent",
+            parent_name == visual["attach_to"],
+            visual["attach_to"],
+            parent_name,
+        )
+        mesh = component.get_editor_property("static_mesh")
+        self.check(
+            "blueprint.character.placeholder_visual.mesh",
+            identity(mesh) == visual["mesh"],
+            visual["mesh"],
+            identity(mesh),
+        )
+        collision_profile = str(component.get_collision_profile_name())
+        self.check(
+            "blueprint.character.placeholder_visual.collision_profile",
+            collision_profile == visual["collision_profile"],
+            visual["collision_profile"],
+            collision_profile,
+        )
+        affects_navigation = bool(
+            component.get_editor_property("can_ever_affect_navigation")
+        )
+        self.check(
+            "blueprint.character.placeholder_visual.can_ever_affect_navigation",
+            affects_navigation == bool(visual["can_ever_affect_navigation"]),
+            bool(visual["can_ever_affect_navigation"]),
+            affects_navigation,
+        )
+        location = component.get_editor_property("relative_location")
+        actual_location = {
+            "x": round(float(location.x), 4),
+            "y": round(float(location.y), 4),
+            "z": round(float(location.z), 4),
+        }
+        expected_location = {
+            key: round(float(value), 4)
+            for key, value in visual["relative_location"].items()
+        }
+        self.check(
+            "blueprint.character.placeholder_visual.relative_location",
+            actual_location == expected_location,
+            expected_location,
+            actual_location,
+        )
+        rotation = component.get_editor_property("relative_rotation")
+        actual_rotation = {
+            "pitch": round(float(rotation.pitch), 4),
+            "yaw": round(float(rotation.yaw), 4),
+            "roll": round(float(rotation.roll), 4),
+        }
+        expected_rotation = {
+            key: round(float(value), 4)
+            for key, value in visual["relative_rotation"].items()
+        }
+        self.check(
+            "blueprint.character.placeholder_visual.relative_rotation",
+            actual_rotation == expected_rotation,
+            expected_rotation,
+            actual_rotation,
+        )
+        scale = component.get_editor_property("relative_scale3d")
+        actual_scale = [
+            round(float(scale.x), 4),
+            round(float(scale.y), 4),
+            round(float(scale.z), 4),
+        ]
+        expected_scale = [round(float(value), 4) for value in visual["relative_scale"]]
+        self.check(
+            "blueprint.character.placeholder_visual.relative_scale",
+            actual_scale == expected_scale,
+            expected_scale,
+            actual_scale,
+        )
+
     def validate_blueprints(self) -> None:
         definitions = self.manifest["blueprints"]
         generated_classes = {
@@ -282,6 +437,7 @@ class Validator:
                 "DISABLED",
                 auto_possess,
             )
+            self.validate_character_placeholder(definitions["character"])
 
         controller_class = generated_classes.get("controller")
         if controller_class is not None:

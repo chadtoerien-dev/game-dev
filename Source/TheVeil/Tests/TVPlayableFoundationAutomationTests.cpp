@@ -7,8 +7,48 @@
 #include "Core/TheVeilGameMode.h"
 #include "Core/TheVeilGameState.h"
 #include "Core/TheVeilPlayerController.h"
+#include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+
+namespace
+{
+class FTVScopedTestWorld
+{
+public:
+    FTVScopedTestWorld()
+    {
+        World = UWorld::CreateWorld(EWorldType::Game, false);
+    }
+
+    ~FTVScopedTestWorld()
+    {
+        if (World != nullptr)
+        {
+            World->DestroyWorld(false);
+            World->RemoveFromRoot();
+        }
+    }
+
+    UWorld* Get() const { return World; }
+
+private:
+    UWorld* World = nullptr;
+};
+
+template <typename TActor>
+TActor* SpawnTestActor(UWorld* World)
+{
+    if (World == nullptr)
+    {
+        return nullptr;
+    }
+
+    FActorSpawnParameters SpawnParameters;
+    SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+    return World->SpawnActor<TActor>(TActor::StaticClass(), FTransform::Identity, SpawnParameters);
+}
+}
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
     FTVPlayableCharacterDefaultsTest,
@@ -81,6 +121,81 @@ bool FTVPlayableGameModeDefaultsTest::RunTest(const FString& Parameters)
     TestTrue(TEXT("GameMode uses The Veil character"), GameMode->DefaultPawnClass.Get() == ATheVeilCharacter::StaticClass());
     TestTrue(TEXT("GameMode uses The Veil player controller"), GameMode->PlayerControllerClass.Get() == ATheVeilPlayerController::StaticClass());
     TestTrue(TEXT("GameMode preserves The Veil GameState"), GameMode->GameStateClass.Get() == ATheVeilGameState::StaticClass());
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTVPlayableCharacterStateTransitionsTest,
+    "TheVeil.PlayableFoundation.CharacterStateTransitions",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTVPlayableCharacterStateTransitionsTest::RunTest(const FString& Parameters)
+{
+    FTVScopedTestWorld TestWorld;
+    ATheVeilCharacter* Character = SpawnTestActor<ATheVeilCharacter>(TestWorld.Get());
+    TestNotNull(TEXT("Character spawns in a transient test world"), Character);
+    if (Character == nullptr)
+    {
+        return false;
+    }
+
+    UCharacterMovementComponent* MovementComponent = Character->GetCharacterMovement();
+    TestNotNull(TEXT("Spawned character has movement"), MovementComponent);
+    if (MovementComponent == nullptr)
+    {
+        return false;
+    }
+
+    Character->StartSprint();
+    TestTrue(TEXT("Sprint enters held state"), Character->IsSprinting());
+    TestEqual(TEXT("Sprint applies sprint speed"), MovementComponent->MaxWalkSpeed, 720.0f);
+
+    Character->ToggleCrouch();
+    TestFalse(TEXT("Entering crouch cancels sprint"), Character->IsSprinting());
+    TestTrue(TEXT("Crouch requests the standard movement transition"), MovementComponent->bWantsToCrouch);
+
+    Character->StartSprint();
+    TestFalse(TEXT("Sprint cannot start while crouch is pending"), Character->IsSprinting());
+    TestEqual(TEXT("Pending crouch keeps walk speed"), MovementComponent->MaxWalkSpeed, 500.0f);
+
+    Character->ResetTransientMovementState();
+    TestFalse(TEXT("Reset clears sprint"), Character->IsSprinting());
+    TestFalse(TEXT("Reset clears crouch intent"), MovementComponent->bWantsToCrouch);
+    TestEqual(TEXT("Reset restores walk speed"), MovementComponent->MaxWalkSpeed, 500.0f);
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTVPlayableMovementBasisTest,
+    "TheVeil.PlayableFoundation.MovementBasis",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTVPlayableMovementBasisTest::RunTest(const FString& Parameters)
+{
+    FTVScopedTestWorld TestWorld;
+    ATheVeilCharacter* Character = SpawnTestActor<ATheVeilCharacter>(TestWorld.Get());
+    ATheVeilPlayerController* Controller = SpawnTestActor<ATheVeilPlayerController>(TestWorld.Get());
+    TestNotNull(TEXT("Character spawns for movement-basis test"), Character);
+    TestNotNull(TEXT("Controller spawns for movement-basis test"), Controller);
+    if (Character == nullptr || Controller == nullptr)
+    {
+        return false;
+    }
+
+    Controller->Possess(Character);
+    Controller->SetControlRotation(FRotator(37.0f, 90.0f, 18.0f));
+
+    Character->Move(FVector2D(0.0f, 1.0f));
+    const FVector ForwardInput = Character->ConsumeMovementInputVector();
+    TestTrue(
+        TEXT("Forward movement uses controller yaw and ignores pitch and roll"),
+        ForwardInput.Equals(FVector(0.0f, 1.0f, 0.0f), KINDA_SMALL_NUMBER));
+
+    Character->Move(FVector2D(1.0f, 0.0f));
+    const FVector RightInput = Character->ConsumeMovementInputVector();
+    TestTrue(
+        TEXT("Right movement uses the yaw-relative basis"),
+        RightInput.Equals(FVector(-1.0f, 0.0f, 0.0f), KINDA_SMALL_NUMBER));
     return true;
 }
 

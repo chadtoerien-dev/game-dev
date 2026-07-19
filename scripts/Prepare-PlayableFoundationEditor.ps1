@@ -1,9 +1,14 @@
 [CmdletBinding()]
 param(
-    [switch]$Apply
+    [switch]$Apply,
+    [switch]$ApplyMap
 )
 
 $ErrorActionPreference = 'Stop'
+
+if ($ApplyMap -and -not $Apply) {
+    throw '-ApplyMap requires -Apply because the map override references the generated Blueprints.'
+}
 
 $repositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $verifiedRoot = (git -C $repositoryRoot rev-parse --show-toplevel).Trim().Replace('/', '\')
@@ -36,8 +41,12 @@ New-Item -ItemType Directory -Force -Path $evidenceDirectory | Out-Null
 $env:TV_PLAYABLE_MODE = if ($Apply) { 'apply' } else { 'dry-run' }
 $env:TV_PLAYABLE_MANIFEST = $manifestFile
 $env:TV_PLAYABLE_REPORT = $reportFile
+$env:TV_PLAYABLE_APPLY_MAP = if ($ApplyMap) { '1' } else { '0' }
 if ($Apply) {
     $env:TV_PLAYABLE_CONFIRM = 'CREATE_OR_REPAIR_PLAYABLE_FOUNDATION'
+}
+if ($ApplyMap) {
+    $env:TV_PLAYABLE_MAP_CONFIRM = 'SET_PLAYABLE_FOUNDATION_SANDBOX_GAMEMODE'
 }
 
 try {
@@ -57,7 +66,9 @@ finally {
     Remove-Item Env:TV_PLAYABLE_MODE -ErrorAction SilentlyContinue
     Remove-Item Env:TV_PLAYABLE_MANIFEST -ErrorAction SilentlyContinue
     Remove-Item Env:TV_PLAYABLE_REPORT -ErrorAction SilentlyContinue
+    Remove-Item Env:TV_PLAYABLE_APPLY_MAP -ErrorAction SilentlyContinue
     Remove-Item Env:TV_PLAYABLE_CONFIRM -ErrorAction SilentlyContinue
+    Remove-Item Env:TV_PLAYABLE_MAP_CONFIRM -ErrorAction SilentlyContinue
 }
 
 if ($commandExitCode -ne 0) {
@@ -72,6 +83,7 @@ $report = Get-Content -Raw -LiteralPath $reportFile | ConvertFrom-Json
 $report.operations | Format-Table operation, asset, detail -AutoSize
 Write-Host "Setup status: $($report.status)"
 Write-Host "Map mutated by setup: $($report.map_mutated)"
+Write-Host "Map persisted by setup: $($report.map_persisted)"
 Write-Host "Report: $reportFile"
 
 if ($Apply) {

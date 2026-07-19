@@ -137,7 +137,30 @@
   "blueprints": {
     "character": {
       "asset": "/Game/TheVeil/Characters/BP_TheVeilCharacter",
-      "parent_class": "/Script/TheVeil.TheVeilCharacter"
+      "parent_class": "/Script/TheVeil.TheVeilCharacter",
+      "placeholder_visual": {
+        "component_name": "PlaceholderVisual",
+        "component_class": "/Script/Engine.StaticMeshComponent",
+        "attach_to": "CapsuleComponent",
+        "mesh": "/Engine/BasicShapes/Sphere.Sphere",
+        "relative_location": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "relative_rotation": {
+          "pitch": 0.0,
+          "yaw": 0.0,
+          "roll": 0.0
+        },
+        "relative_scale": [
+          0.84,
+          0.84,
+          1.92
+        ],
+        "collision_profile": "NoCollision",
+        "can_ever_affect_navigation": false
+      }
     },
     "controller": {
       "asset": "/Game/TheVeil/Core/BP_TheVeilPlayerController",
@@ -168,8 +191,6 @@
     "placed_auto_possessed_pawn_count": 0
   },
   "human_only": [
-    "Add and approve a collision-free temporary visual on BP_TheVeilCharacter.",
-    "Set the sandbox GameMode override and save the map and legitimate World Partition companions.",
     "Place exactly one PlayerStart on walkable ground with capsule clearance and no BADsize warning.",
     "Judge architectural fidelity and record every deliberate deviation from the King’s College source baseline.",
     "Run keyboard and controller PIE acceptance, focus-loss recovery, the two-minute soak, and capture evidence."

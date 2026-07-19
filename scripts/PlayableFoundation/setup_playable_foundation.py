@@ -1,8 +1,8 @@
-"""Create or repair the non-map Playable Foundation Editor assets.
+"""Create or repair the bounded Playable Foundation Editor integration.
 
-The script is intentionally map-safe: it never opens, changes, or saves a level.
-Run it through Prepare-PlayableFoundationEditor.ps1 so the manifest, report and
-explicit apply guard are supplied consistently.
+The nine non-map assets are covered by the normal apply guard. The sandbox map
+remains read-only unless the separate map apply guard is explicitly supplied by
+Prepare-PlayableFoundationEditor.ps1.
 """
 
 from __future__ import annotations
@@ -16,6 +16,7 @@ import unreal
 
 
 APPLY_CONFIRMATION = "CREATE_OR_REPAIR_PLAYABLE_FOUNDATION"
+MAP_APPLY_CONFIRMATION = "SET_PLAYABLE_FOUNDATION_SANDBOX_GAMEMODE"
 EXPECTED_ASSET_PATHS = {
     "/Game/TheVeil/Input/IA_Move",
     "/Game/TheVeil/Input/IA_Look",
@@ -89,6 +90,20 @@ def validate_manifest_scope(manifest: dict) -> None:
     if manifest["map"]["asset"] != "/Game/Maps/L_Dev_Sandbox":
         raise PermissionError("Only L_Dev_Sandbox may be inspected by this workflow")
 
+    placeholder = blueprint_definitions["character"].get("placeholder_visual", {})
+    if placeholder != {
+        "component_name": "PlaceholderVisual",
+        "component_class": "/Script/Engine.StaticMeshComponent",
+        "attach_to": "CapsuleComponent",
+        "mesh": "/Engine/BasicShapes/Sphere.Sphere",
+        "relative_location": {"x": 0.0, "y": 0.0, "z": 0.0},
+        "relative_rotation": {"pitch": 0.0, "yaw": 0.0, "roll": 0.0},
+        "relative_scale": [0.84, 0.84, 1.92],
+        "collision_profile": "NoCollision",
+        "can_ever_affect_navigation": False,
+    }:
+        raise PermissionError("Character placeholder visual differs from the authorised contract")
+
 
 def object_identity(value: Any) -> Any:
     if value is None:
@@ -99,9 +114,10 @@ def object_identity(value: Any) -> Any:
 
 
 class Setup:
-    def __init__(self, manifest: dict, mode: str) -> None:
+    def __init__(self, manifest: dict, mode: str, apply_map: bool) -> None:
         self.manifest = manifest
         self.mode = mode
+        self.apply_map = apply_map
         self.asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
         self.report = {
             "schema_version": 1,
@@ -111,6 +127,8 @@ class Setup:
             "operations": [],
             "errors": [],
             "map_mutated": False,
+            "map_apply_requested": apply_map,
+            "map_persisted": False,
             "content_persisted": mode == "apply",
             "human_remaining": manifest.get("human_only", []),
         }
@@ -122,6 +140,10 @@ class Setup:
     @property
     def persisting(self) -> bool:
         return self.mode == "apply"
+
+    @property
+    def applying_map(self) -> bool:
+        return self.persisting and self.apply_map
 
     def record(self, asset_path: str, operation: str, detail: str) -> None:
         self.report["operations"].append(
@@ -180,6 +202,18 @@ class Setup:
         if library is not None:
             library.compile_blueprint(blueprint)
 
+    @staticmethod
+    def blueprint_subobjects(blueprint: Any) -> list[tuple[Any, str, Any]]:
+        subsystem = unreal.get_engine_subsystem(unreal.SubobjectDataSubsystem)
+        library = unreal.SubobjectDataBlueprintFunctionLibrary
+        snapshots = []
+        for handle in subsystem.k2_gather_subobject_data_for_blueprint(blueprint):
+            data = library.get_data(handle)
+            variable_name = str(library.get_variable_name(data))
+            component = library.get_object_for_blueprint(data, blueprint)
+            snapshots.append((handle, variable_name, component))
+        return snapshots
+
     def ensure_input_action(self, definition: dict) -> Any:
         asset_path = definition["asset"]
         action = self.load_asset(asset_path)
@@ -194,7 +228,11 @@ class Setup:
             raise TypeError(f"{asset_path} exists but is not an Input Action")
 
         if not self.applying:
-            self.record(asset_path, "would_repair", "value and accumulation defaults")
+            self.record(
+                asset_path,
+                "would_repair",
+                "value, accumulation and empty action-level trigger/modifier defaults",
+            )
             return action
 
         value_type = getattr(unreal.InputActionValueType, definition["value_type"])
@@ -205,8 +243,14 @@ class Setup:
         action.modify()
         action.set_editor_property("value_type", value_type)
         action.set_editor_property("accumulation_behavior", accumulation)
+        action.set_editor_property("triggers", [])
+        action.set_editor_property("modifiers", [])
         self.save_asset(action)
-        self.record(asset_path, "repaired", "value and accumulation defaults")
+        self.record(
+            asset_path,
+            "repaired",
+            "value, accumulation and empty action-level trigger/modifier defaults",
+        )
         return action
 
     def create_modifier(self, context: Any, definition: dict) -> Any:
@@ -373,6 +417,164 @@ class Setup:
         self.record(asset_path, "repaired", f"{label} class defaults")
         return blueprint
 
+    def ensure_character_placeholder_visual(self, definition: dict, blueprint: Any) -> None:
+        asset_path = definition["asset"]
+        visual = definition["placeholder_visual"]
+        component_name = visual["component_name"]
+
+        if not self.applying:
+            self.record(
+                asset_path,
+                "would_repair",
+                f"collision-free {component_name} ellipsoid visual",
+            )
+            return
+
+        subsystem = unreal.get_engine_subsystem(unreal.SubobjectDataSubsystem)
+        library = unreal.SubobjectDataBlueprintFunctionLibrary
+        subobjects = self.blueprint_subobjects(blueprint)
+        parent_matches = [
+            (handle, component)
+            for handle, variable_name, component in subobjects
+            if variable_name == visual["attach_to"]
+        ]
+        if len(parent_matches) != 1:
+            raise RuntimeError(
+                f"Expected one {visual['attach_to']} subobject on {asset_path}; "
+                f"found {len(parent_matches)}"
+            )
+        parent_handle, _ = parent_matches[0]
+
+        visual_matches = [
+            (handle, component)
+            for handle, variable_name, component in subobjects
+            if variable_name == component_name
+        ]
+        if len(visual_matches) > 1:
+            raise RuntimeError(f"Found duplicate {component_name} components on {asset_path}")
+
+        if visual_matches:
+            visual_handle, component = visual_matches[0]
+            if not isinstance(component, unreal.StaticMeshComponent):
+                raise TypeError(f"{component_name} exists but is not a StaticMeshComponent")
+            if not subsystem.attach_subobject(parent_handle, visual_handle):
+                raise RuntimeError(f"Could not attach {component_name} to {visual['attach_to']}")
+            operation = "repaired"
+        else:
+            parameters = unreal.AddNewSubobjectParams(
+                parent_handle=parent_handle,
+                new_class=unreal.StaticMeshComponent,
+                blueprint_context=blueprint,
+                conform_transform_to_parent=True,
+            )
+            visual_handle, failure_reason = subsystem.add_new_subobject(parameters)
+            if not library.is_handle_valid(visual_handle):
+                raise RuntimeError(
+                    f"Could not add {component_name} to {asset_path}: {failure_reason}"
+                )
+            if not subsystem.rename_subobject(visual_handle, unreal.Text(component_name)):
+                raise RuntimeError(f"Could not rename new component to {component_name}")
+            self.compile_blueprint(blueprint)
+
+            visual_matches = [
+                (handle, component)
+                for handle, variable_name, component in self.blueprint_subobjects(blueprint)
+                if variable_name == component_name
+            ]
+            if len(visual_matches) != 1:
+                raise RuntimeError(
+                    f"Could not resolve newly created {component_name} on {asset_path}"
+                )
+            _, component = visual_matches[0]
+            operation = "created"
+
+        placeholder_mesh = unreal.load_asset(visual["mesh"])
+        if not isinstance(placeholder_mesh, unreal.StaticMesh):
+            raise RuntimeError(f"Placeholder mesh is unavailable: {visual['mesh']}")
+
+        component.modify()
+        current_mesh = component.get_editor_property("static_mesh")
+        if (
+            object_identity(current_mesh) != object_identity(placeholder_mesh)
+            and not component.set_static_mesh(placeholder_mesh)
+        ):
+            raise RuntimeError(f"Unreal rejected the placeholder mesh on {component_name}")
+        component.set_collision_profile_name(unreal.Name(visual["collision_profile"]))
+        component.set_editor_property(
+            "can_ever_affect_navigation",
+            bool(visual["can_ever_affect_navigation"]),
+        )
+        location = visual["relative_location"]
+        component.set_editor_property(
+            "relative_location",
+            unreal.Vector(
+                float(location["x"]),
+                float(location["y"]),
+                float(location["z"]),
+            ),
+        )
+        rotation = visual["relative_rotation"]
+        component.set_editor_property(
+            "relative_rotation",
+            unreal.Rotator(
+                float(rotation["roll"]),
+                float(rotation["pitch"]),
+                float(rotation["yaw"]),
+            ),
+        )
+        scale = visual["relative_scale"]
+        component.set_relative_scale3d(
+            unreal.Vector(float(scale[0]), float(scale[1]), float(scale[2]))
+        )
+        blueprint.modify()
+        self.compile_blueprint(blueprint)
+        self.save_asset(blueprint)
+        self.record(
+            asset_path,
+            operation,
+            f"collision-free ellipsoid {component_name} attached to {visual['attach_to']}",
+        )
+
+    def ensure_map_game_mode(self) -> None:
+        definition = self.manifest["map"]
+        map_path = definition["asset"]
+        expected_class = unreal.EditorAssetLibrary.load_blueprint_class(
+            definition["game_mode_override"]
+        )
+        if expected_class is None:
+            raise RuntimeError(
+                f"Required map GameMode class is unavailable: {definition['game_mode_override']}"
+            )
+
+        if not self.apply_map:
+            self.record(
+                map_path,
+                "map_not_requested",
+                "pass -ApplyMap to allow the sandbox GameMode override",
+            )
+            return
+        if not self.applying_map:
+            self.record(map_path, "would_set", "sandbox GameMode override")
+            return
+
+        world = unreal.EditorLoadingAndSavingUtils.load_map(map_path)
+        if world is None:
+            raise RuntimeError(f"Unreal could not load the authorised map: {map_path}")
+        world_settings = world.get_world_settings()
+        current_class = world_settings.get_editor_property("default_game_mode")
+        if object_identity(current_class) == object_identity(expected_class):
+            self.report["map_persisted"] = True
+            self.record(map_path, "verified", "sandbox GameMode override already correct")
+            return
+
+        world_settings.modify()
+        world_settings.set_editor_property("default_game_mode", expected_class)
+        if not unreal.EditorLoadingAndSavingUtils.save_map(world, map_path):
+            raise RuntimeError(f"Unreal failed to save the authorised map: {map_path}")
+        self.report["map_mutated"] = True
+        self.report["map_persisted"] = True
+        self.record(map_path, "set_and_saved", "sandbox GameMode override")
+
     def run(self) -> dict:
         for action_definition in self.manifest["input_actions"]:
             self.ensure_input_action(action_definition)
@@ -380,8 +582,14 @@ class Setup:
         self.ensure_mapping_context(self.manifest["mapping_context"])
 
         blueprint_definitions = self.manifest["blueprints"]
+        blueprints = {}
         for label in ("character", "controller", "game_mode"):
-            self.ensure_blueprint(label, blueprint_definitions[label])
+            blueprints[label] = self.ensure_blueprint(label, blueprint_definitions[label])
+
+        self.ensure_character_placeholder_visual(
+            blueprint_definitions["character"], blueprints["character"]
+        )
+        self.ensure_map_game_mode()
 
         if self.mode == "dry-run":
             self.report["status"] = "dry_run_complete"
@@ -402,12 +610,20 @@ def main() -> None:
         raise PermissionError(
             "Apply mode requires TV_PLAYABLE_CONFIRM=CREATE_OR_REPAIR_PLAYABLE_FOUNDATION"
         )
+    apply_map = os.environ.get("TV_PLAYABLE_APPLY_MAP") == "1"
+    if apply_map and mode != "apply":
+        raise PermissionError("Map apply is only available with normal apply mode")
+    if apply_map and os.environ.get("TV_PLAYABLE_MAP_CONFIRM") != MAP_APPLY_CONFIRMATION:
+        raise PermissionError(
+            "Map apply requires "
+            "TV_PLAYABLE_MAP_CONFIRM=SET_PLAYABLE_FOUNDATION_SANDBOX_GAMEMODE"
+        )
 
     manifest_path = os.environ.get("TV_PLAYABLE_MANIFEST", DEFAULT_MANIFEST)
     report_path = os.environ.get("TV_PLAYABLE_REPORT", DEFAULT_REPORT)
     manifest = load_json(manifest_path)
     validate_manifest_scope(manifest)
-    setup = Setup(manifest, mode)
+    setup = Setup(manifest, mode, apply_map)
 
     try:
         report = setup.run()
