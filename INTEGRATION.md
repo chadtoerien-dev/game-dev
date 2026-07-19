@@ -11,7 +11,7 @@ Verified on 19 July 2026 unless otherwise noted:
 - MSVC toolchain `14.50.35717`
 - Windows SDK `10.0.22621.0`
 - successful `TheVeilEditor` Development/Win64 build
-- eleven passing `TheVeil.*` automation tests
+- twelve passing `TheVeil.*` automation tests
 - strict structural validation of the saved Playable Foundation assets and map integration with zero failures
 - successful pre-0.5 `L_Dev_Sandbox` PIE smoke test on 17 July 2026; physical-input, camera-feel and final visual acceptance remain a human checkpoint
 
@@ -268,23 +268,24 @@ Expected tests:
 - `TheVeil.PlayableFoundation.CharacterDefaults`
 - `TheVeil.PlayableFoundation.CharacterStateTransitions`
 - `TheVeil.PlayableFoundation.ControllerBindings`
+- `TheVeil.PlayableFoundation.ControllerMappingContextOwnership`
 - `TheVeil.PlayableFoundation.ControllerTransientCleanup`
 - `TheVeil.PlayableFoundation.GameModeDefaults`
 - `TheVeil.PlayableFoundation.MovementBasis`
 
-All eleven passed locally on 19 July 2026 with zero failures and zero skips.
+All twelve passed locally on 19 July 2026 with zero failures and zero skips.
 
 ## 19 July 2026 non-human verification evidence
 
 - Guarded setup: `powershell -ExecutionPolicy Bypass -File ".\scripts\Prepare-PlayableFoundationEditor.ps1" -Apply -ApplyMap` passed preflight, recorded exactly nine saved content packages and verified the sandbox GameMode override. An idempotent re-run reported `content_persisted: true`, `map_mutated: false`, `map_persisted: true`, zero errors and zero commandlet warnings.
-- Strict read-only validation: `Saved/PlayableFoundation/validation-report.json` reports 60 checks, `automated_status: pass`, zero failures, `map_mutated: false` and `content_mutated: false`. The checks include current compiler status for all three Blueprints, one PlayerStart, zero placed auto-possessed pawns, all nine assets and the intended GameMode override.
-- Build: `Saved/BuildLogs/TheVeilEditor-Development-20260719-025121.log` reports compiled and linked source with `Result: Succeeded`.
-- Automation: `Saved/AutomationReports/20260719-030032/index.json` reports 11 succeeded, 0 failed and 0 not run.
+- Strict read-only validation: `Saved/PlayableFoundation/validation-report.json` reports 59 automated passes, one human PlayerStart-clearance check, `automated_status: pass`, zero failures, `map_mutated: false` and `content_mutated: false`. The automated checks include current compiler status for all three Blueprints, one loaded PlayerStart, zero placed auto-possessed pawns, all nine assets and the intended GameMode override.
+- Build: `Saved/BuildLogs/TheVeilEditor-Development-20260719-032319.log` reports compiled and linked source with `Result: Succeeded`.
+- Automation: `Saved/AutomationReports/20260719-032716/index.json` reports 12 succeeded, 0 succeeded with warnings, 0 failed and 0 not run.
 - Durable evidence: `docs/evidence/0.5-playable-foundation-automated-verification.md` records the commands, extracts and SHA-256 checksums required by remote PR reviewers.
-- Repository audit: `git diff --check` passed; the bounded integration was committed as `7a3f172` with no World Partition companion or protected social-system changes.
+- Repository audit: working-tree, staged-index and complete `origin/main...HEAD` whitespace checks passed, with no World Partition companion or protected social-system changes.
 
 Reports and logs under `Saved/` are local evidence and remain excluded from source control. Structural integration is complete; the manual PIE checklist remains required for physical input, spatial, feel and visual acceptance.
 
 ## Current playable boundary
 
-`/Game/Maps/L_Dev_Sandbox` exists, loads and passed the pre-0.5 PIE smoke test. The saved map now uses the intended GameMode, the nine manifest-owned input/Blueprint assets are persisted and wired, and strict validation reports one loaded PlayerStart with zero placed auto-possessed pawns. The native character, PlayerController and GameMode build and all eleven automation tests pass. PlayerStart clearance, physical keyboard/controller behaviour, camera feel and collision, focus-loss recovery, the two-minute PIE soak and capture evidence remain the human acceptance boundary. Interaction, embodied contestants, the Tribunal and night-operation content remain future milestones.
+`/Game/Maps/L_Dev_Sandbox` exists, loads and passed the pre-0.5 PIE smoke test. The saved map now uses the intended GameMode, the nine manifest-owned input/Blueprint assets are persisted and wired, and strict validation reports one loaded PlayerStart with zero placed auto-possessed pawns. The native character, PlayerController and GameMode build and all twelve automation tests pass. PlayerStart clearance, physical keyboard/controller behaviour, camera feel and collision, focus-loss recovery, the two-minute PIE soak and capture evidence remain the human acceptance boundary. Interaction, embodied contestants, the Tribunal and night-operation content remain future milestones.

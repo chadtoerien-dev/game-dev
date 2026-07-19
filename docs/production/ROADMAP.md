@@ -144,7 +144,7 @@ The GitHub migration checklist must confirm the local UE5.8 repair commit and de
 - PIE starts and exits without a crash
 - editor target builds successfully
 - the five pre-existing automation tests remain green
-- the six playable-foundation defaults, movement, binding and cleanup tests remain green
+- the seven playable-foundation defaults, movement, binding, mapping-context ownership and cleanup tests remain green
 
 ### Explicit non-goals
 

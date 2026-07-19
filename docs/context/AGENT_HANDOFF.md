@@ -18,7 +18,7 @@ The intended experience combines:
 
 ## Executive state
 
-The native social-simulation foundation has reached milestone **0.4**. The native and saved structural integration for milestone **0.5** are implemented and verified locally; subjective Editor/PIE acceptance and independent review remain.
+The native social-simulation foundation has reached milestone **0.4**. The native and saved structural integration for milestone **0.5** are implemented, verified locally and independently approved with non-blocking findings addressed; subjective Editor/PIE acceptance remains.
 
 Verified on 17 July 2026:
 
@@ -33,13 +33,13 @@ Verified on 17 July 2026:
 Verified on 19 July 2026:
 
 - `TheVeilEditor` Development/Win64 build succeeded
-- all eleven `TheVeil.*` automation tests passed with zero failures and zero skips, including movement-basis, binding idempotence and controller cleanup coverage
+- all twelve `TheVeil.*` automation tests passed with zero failures and zero skips, including movement-basis, binding idempotence, mapping-context ownership and controller cleanup coverage
 - manifest-driven Editor setup persisted five Input Actions, one Input Mapping Context and three derived Blueprints
 - `BP_TheVeilCharacter` contains one collision-free, navigation-neutral temporary ellipsoid visual attached to the native capsule
 - `L_Dev_Sandbox` persists `BP_TheVeilGameMode`, one loaded PlayerStart and zero placed auto-possessed pawns
-- strict read-only structural validation passed all 60 automated checks and dirtied neither map nor content
-- compilation/link evidence: `Saved/BuildLogs/TheVeilEditor-Development-20260719-025121.log`
-- final automation evidence: `Saved/AutomationReports/20260719-030032` (11 succeeded, 0 failed, 0 skipped)
+- strict read-only structural validation recorded 59 automated passes and one human PlayerStart-clearance check, with zero failures and no map/content mutation
+- compilation/link evidence: `Saved/BuildLogs/TheVeilEditor-Development-20260719-032319.log`
+- final automation evidence: `Saved/AutomationReports/20260719-032716` (12 succeeded, 0 warnings, 0 failed, 0 skipped)
 - durable PR evidence: `docs/evidence/0.5-playable-foundation-automated-verification.md`
 - structural evidence: `Saved/PlayableFoundation/validation-report.json` (`automated_status: pass`, 0 failures)
 - King’s College, Cambridge is the approved one-to-one-scale, maximum-source-fidelity architectural basis for the bounded vertical-slice footprint
@@ -170,6 +170,7 @@ Expected tests:
 - `TheVeil.PlayableFoundation.CharacterDefaults`
 - `TheVeil.PlayableFoundation.CharacterStateTransitions`
 - `TheVeil.PlayableFoundation.ControllerBindings`
+- `TheVeil.PlayableFoundation.ControllerMappingContextOwnership`
 - `TheVeil.PlayableFoundation.ControllerTransientCleanup`
 - `TheVeil.PlayableFoundation.GameModeDefaults`
 - `TheVeil.PlayableFoundation.MovementBasis`

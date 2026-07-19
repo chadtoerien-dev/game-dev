@@ -8,10 +8,15 @@
 #include "Core/TheVeilGameState.h"
 #include "Core/TheVeilPlayerController.h"
 #include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "Engine/Engine.h"
+#include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "InputAction.h"
+#include "InputMappingContext.h"
+#include "UObject/UnrealType.h"
 
 namespace
 {
@@ -36,6 +41,33 @@ public:
 
 private:
     UWorld* World = nullptr;
+};
+
+class FTVScopedLocalPlayer
+{
+public:
+    explicit FTVScopedLocalPlayer(APlayerController* Controller)
+    {
+        if (GEngine != nullptr && Controller != nullptr)
+        {
+            LocalPlayer = NewObject<ULocalPlayer>(GEngine);
+            LocalPlayer->PlayerAdded(nullptr, 0);
+            Controller->SetPlayer(LocalPlayer);
+        }
+    }
+
+    ~FTVScopedLocalPlayer()
+    {
+        if (LocalPlayer != nullptr)
+        {
+            LocalPlayer->PlayerRemoved();
+        }
+    }
+
+    ULocalPlayer* Get() const { return LocalPlayer; }
+
+private:
+    ULocalPlayer* LocalPlayer = nullptr;
 };
 
 template <typename TActor>
@@ -265,6 +297,95 @@ bool FTVPlayableControllerBindingsTest::RunTest(const FString& Parameters)
         TEXT("Rebinding the same component does not add duplicates"),
         InputComponent->GetActionEventBindings().Num(),
         9);
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTVPlayableControllerMappingContextOwnershipTest,
+    "TheVeil.PlayableFoundation.ControllerMappingContextOwnership",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTVPlayableControllerMappingContextOwnershipTest::RunTest(const FString& Parameters)
+{
+    FTVScopedTestWorld TestWorld;
+    ATheVeilPlayerController* Controller = SpawnTestActor<ATheVeilPlayerController>(TestWorld.Get());
+    TestNotNull(TEXT("Controller spawns for mapping-context test"), Controller);
+    if (Controller == nullptr)
+    {
+        return false;
+    }
+
+    UInputMappingContext* OwnedContext = NewObject<UInputMappingContext>(Controller);
+    FEnumProperty* TrackingModeProperty = FindFProperty<FEnumProperty>(
+        UInputMappingContext::StaticClass(),
+        TEXT("RegistrationTrackingMode"));
+    TestNotNull(TEXT("Mapping-context registration mode is reflected"), TrackingModeProperty);
+    if (OwnedContext == nullptr || TrackingModeProperty == nullptr)
+    {
+        return false;
+    }
+
+    void* TrackingModeAddress = TrackingModeProperty->ContainerPtrToValuePtr<void>(OwnedContext);
+    TrackingModeProperty->GetUnderlyingProperty()->SetIntPropertyValue(
+        TrackingModeAddress,
+        static_cast<int64>(EMappingContextRegistrationTrackingMode::CountRegistrations));
+    TestEqual(
+        TEXT("Owned test context counts duplicate registrations"),
+        OwnedContext->GetRegistrationTrackingMode(),
+        EMappingContextRegistrationTrackingMode::CountRegistrations);
+
+    Controller->ConfigureMappingContextForAutomationTests(OwnedContext);
+    Controller->ConfigureInputActionsForAutomationTests(
+        NewObject<UInputAction>(Controller),
+        NewObject<UInputAction>(Controller),
+        NewObject<UInputAction>(Controller),
+        NewObject<UInputAction>(Controller),
+        NewObject<UInputAction>(Controller));
+
+    FTVScopedLocalPlayer ScopedLocalPlayer(Controller);
+    ULocalPlayer* LocalPlayer = ScopedLocalPlayer.Get();
+    UEnhancedInputLocalPlayerSubsystem* InputSubsystem =
+        ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+    TestNotNull(TEXT("Enhanced Input local-player subsystem is available"), InputSubsystem);
+    if (InputSubsystem == nullptr)
+    {
+        return false;
+    }
+
+    Controller->ApplyInputMappingContextForAutomationTests();
+    Controller->ApplyInputMappingContextForAutomationTests();
+    TestTrue(
+        TEXT("Repeated application leaves the owned context active"),
+        InputSubsystem->HasMappingContext(OwnedContext));
+    Controller->RemoveOwnedInputMappingContextForAutomationTests();
+    TestFalse(
+        TEXT("One owned removal clears the context, proving it was not registered twice"),
+        InputSubsystem->HasMappingContext(OwnedContext));
+
+    UInputMappingContext* PreExistingContext = NewObject<UInputMappingContext>(Controller);
+    InputSubsystem->AddMappingContext(PreExistingContext, 7);
+    Controller->ConfigureMappingContextForAutomationTests(PreExistingContext);
+    Controller->ApplyInputMappingContextForAutomationTests();
+    Controller->RemoveOwnedInputMappingContextForAutomationTests();
+    TestTrue(
+        TEXT("The controller does not remove a context that pre-existed from another owner"),
+        InputSubsystem->HasMappingContext(PreExistingContext));
+    InputSubsystem->RemoveMappingContext(PreExistingContext);
+
+    Controller->ConfigureMappingContextForAutomationTests(OwnedContext);
+    Controller->ApplyInputMappingContextForAutomationTests();
+    InputSubsystem->RemoveMappingContext(OwnedContext);
+    TestFalse(
+        TEXT("External removal clears the context before recovery"),
+        InputSubsystem->HasMappingContext(OwnedContext));
+    Controller->ApplyInputMappingContextForAutomationTests();
+    TestTrue(
+        TEXT("Application recovers when an owned context was removed externally"),
+        InputSubsystem->HasMappingContext(OwnedContext));
+    Controller->RemoveOwnedInputMappingContextForAutomationTests();
+    TestFalse(
+        TEXT("Recovered owned context is removed during cleanup"),
+        InputSubsystem->HasMappingContext(OwnedContext));
     return true;
 }
 

@@ -26,7 +26,10 @@ public:
         UInputAction* InJumpAction,
         UInputAction* InSprintAction,
         UInputAction* InCrouchAction);
+    void ConfigureMappingContextForAutomationTests(UInputMappingContext* InMappingContext);
+    void ApplyInputMappingContextForAutomationTests();
     void BindInputComponentForAutomationTests(UInputComponent* TestInputComponent);
+    void RemoveOwnedInputMappingContextForAutomationTests();
 #endif
 
 protected:

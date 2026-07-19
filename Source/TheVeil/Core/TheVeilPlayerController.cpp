@@ -140,6 +140,22 @@ void ATheVeilPlayerController::BindInputComponentForAutomationTests(
 {
     BindConfiguredInputActions(TestInputComponent);
 }
+
+void ATheVeilPlayerController::ConfigureMappingContextForAutomationTests(
+    UInputMappingContext* InMappingContext)
+{
+    PlayerMappingContext = InMappingContext;
+}
+
+void ATheVeilPlayerController::ApplyInputMappingContextForAutomationTests()
+{
+    ApplyInputMappingContext();
+}
+
+void ATheVeilPlayerController::RemoveOwnedInputMappingContextForAutomationTests()
+{
+    RemoveOwnedInputMappingContext();
+}
 #endif
 
 void ATheVeilPlayerController::ApplyInputMappingContext()
