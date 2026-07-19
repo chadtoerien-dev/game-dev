@@ -1,6 +1,6 @@
 # Agent and Contributor Handover
 
-Last updated: 17 July 2026
+Last updated: 19 July 2026
 
 ## Mission
 
@@ -18,7 +18,7 @@ The intended experience combines:
 
 ## Executive state
 
-The native social-simulation foundation has reached milestone **0.4** and now builds successfully in Unreal Engine 5.8 on the owner's Windows machine.
+The native social-simulation foundation has reached milestone **0.4**, and Playable Foundation **0.5** is complete. Its native implementation, saved integration, automated verification, independent review and human Editor/PIE acceptance are recorded on the feature branch and PR.
 
 Verified on 17 July 2026:
 
@@ -30,7 +30,25 @@ Verified on 17 July 2026:
 - `L_Dev_Sandbox` loaded
 - Play-in-Editor started and exited without a crash or fatal error
 
-The project is technically alive, but it is not yet a playable action RPG. The social logic is ahead of the player, camera, movement, interaction, embodied NPC and presentation layers.
+Verified on 19 July 2026:
+
+- `TheVeilEditor` Development/Win64 build succeeded
+- all twelve `TheVeil.*` automation tests passed with zero failures and zero skips, including movement-basis, binding idempotence, mapping-context ownership and controller cleanup coverage
+- manifest-driven Editor setup persisted five Input Actions, one Input Mapping Context and three derived Blueprints
+- `BP_TheVeilCharacter` contains one collision-free, navigation-neutral temporary ellipsoid visual attached to the native capsule
+- `L_Dev_Sandbox` persists `BP_TheVeilGameMode`, one loaded PlayerStart and zero placed auto-possessed pawns
+- strict read-only structural validation recorded 59 automated passes and one human PlayerStart-clearance check, with zero failures and no map/content mutation
+- compilation/link evidence: `Saved/BuildLogs/TheVeilEditor-Development-20260719-032319.log`
+- final automation evidence: `Saved/AutomationReports/20260719-032716` (12 succeeded, 0 warnings, 0 failed, 0 skipped)
+- durable PR evidence: `docs/evidence/0.5-playable-foundation-automated-verification.md`
+- structural evidence: `Saved/PlayableFoundation/validation-report.json` (`automated_status: pass`, 0 failures)
+- live Editor evidence confirmed the intended GameMode, exactly one clear PlayerStart, one controlled pawn, keyboard movement, mouse look, sprint, crouch, jump and clean PIE exit
+- a fresh continuous PIE soak ran for 137 seconds; Output Log filters found no `Fatal` or `LogPIE: Error` entries
+- Chad Toerien confirmed physical controller parity, camera collision/feel, focus-loss recovery and the temporary visual, then approved progression
+- durable human evidence: `docs/evidence/0.5-playable-foundation-human-acceptance.md`
+- King’s College, Cambridge is the approved one-to-one-scale, maximum-source-fidelity architectural basis for the bounded vertical-slice footprint
+
+The saved playable shell is accepted. The next production milestone is **0.6 — Interaction and Camera Feel**; it must add a bounded, testable interaction loop without expanding into final environment art.
 
 ## Repository and local environment
 
@@ -153,6 +171,13 @@ Expected tests:
 - `TheVeil.Information.InterpretationRuleSelection`
 - `TheVeil.Claims.DirectContradiction`
 - `TheVeil.Claims.LocationContradiction`
+- `TheVeil.PlayableFoundation.CharacterDefaults`
+- `TheVeil.PlayableFoundation.CharacterStateTransitions`
+- `TheVeil.PlayableFoundation.ControllerBindings`
+- `TheVeil.PlayableFoundation.ControllerMappingContextOwnership`
+- `TheVeil.PlayableFoundation.ControllerTransientCleanup`
+- `TheVeil.PlayableFoundation.GameModeDefaults`
+- `TheVeil.PlayableFoundation.MovementBasis`
 
 ## Current content state
 
@@ -184,7 +209,7 @@ At the verification point, content comprised approximately 145 files and 31.24 M
 /Game/Maps/L_Dev_Sandbox.L_Dev_Sandbox
 ```
 
-The sandbox can enter and exit PIE, but there is not yet a production player character, movement stack or gameplay scene.
+The sandbox enters and exits PIE cleanly, spawns one controlled pawn at the deliberate PlayerStart and uses the manifest-generated Blueprint and Enhanced Input assets. The native player, movement, camera and GameMode classes pass structural, automated and Product Owner acceptance.
 
 ## Native architecture implemented
 
@@ -246,20 +271,20 @@ Use `docs/context/CURSOR_MIGRATION_CHECKLIST.md` for the final reconciliation pr
 
 ## Immediate next milestone
 
-The next milestone is **Playable Foundation 0.5**, not final art and not a larger estate.
+The next milestone is **Interaction and Camera Feel 0.6**, not final art and not a larger estate.
 
 Required result:
 
 ```text
-launch sandbox
-→ spawn controlled third-person character
-→ responsive camera-relative movement
-→ sprint, crouch and jump
-→ stable camera and collision
-→ reusable interaction trace
-→ open one test door or trigger one test interaction
-→ exit PIE cleanly
+approach a test object
+→ acquire a valid focus target
+→ show a clear development prompt
+→ interact once per input press
+→ reject blocked or out-of-range targets
+→ preserve keyboard/controller parity and stable camera behaviour
 ```
+
+Create the Milestone 0.6 task brief before implementation. Its bounded implementation should introduce the reusable interaction interface/trace, a test door, one inspectable or collectible object, prompt state and focused automation.
 
 Acceptance criteria are defined in the roadmap.
 
@@ -274,9 +299,8 @@ After that:
 
 ## Known limitations
 
-- No polished player locomotion or animation stack
-- No production GameMode or player pawn
-- No final input mapping assets
+- The accepted player remains a collision-free temporary ellipsoid with no polished locomotion or animation stack
+- The live 0.5 acceptance session has a durable written attestation but no retained video file
 - No embodied NPC StateTrees in the saved sandbox
 - No playable conversation interface
 - No interactive Tribunal UI
@@ -286,17 +310,13 @@ After that:
 - No packaged Development build yet
 - No CI runner currently proves the Windows UE build on every PR
 
-## First task for Cursor
+## Immediate delivery task
 
-Create a task from `docs/production/TASK_BRIEF_TEMPLATE.md` titled:
-
-```text
-Implement Playable Foundation 0.5: third-person character, camera and input
-```
-
-Use GPT-5.6 Sol for the architecture and acceptance plan, Claude Sonnet 5 for the primary UE C++ implementation, Composer 2.5 for bounded scripts/tests or follow-up edits, and Gemini as the independent multimodal reviewer of the resulting editor and PIE captures.
-
-Do not let multiple agents edit the same character, controller, GameMode or input files in parallel.
+1. merge the accepted 0.5 pull request after the final documentation review;
+2. create a dedicated Milestone 0.6 task brief and branch;
+3. implement the smallest reusable interaction interface/trace and test-door loop;
+4. preserve the accepted movement/input shell and all social-system boundaries;
+5. keep the King’s College reconstruction as the approved spatial target without starting final-art production before the complete loop is stable.
 
 ## Definition of done for every milestone
 

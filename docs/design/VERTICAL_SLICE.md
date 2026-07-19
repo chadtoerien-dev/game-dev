@@ -53,6 +53,10 @@ Build one compact, connected manor wing containing:
 
 Do not build the full estate.
 
+The approved architectural basis is King’s College, Cambridge. Reconstruct the selected footprint at one-to-one spatial scale and maximum source-verified fidelity, following `docs/design/KINGS_COLLEGE_CAMBRIDGE_REPLICA_BRIEF.md`. This does not expand the vertical slice to the full College.
+
+Any room, connection or decorative element that cannot be supported by authorised measurements or sources must be marked as an authored production interpretation. The Veil’s fiction, characters, missions, UI, audio and protected expression remain original.
+
 ## Challenge: The Reliquary Run
 
 Contestants split into two teams and recover three reliquary pieces from the courtyard, servants’ route and underground chamber.
