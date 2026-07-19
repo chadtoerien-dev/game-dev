@@ -19,6 +19,16 @@ public:
     virtual void FlushPressedKeys() override;
     virtual void SetPawn(APawn* InPawn) override;
 
+#if WITH_DEV_AUTOMATION_TESTS
+    void ConfigureInputActionsForAutomationTests(
+        UInputAction* InMoveAction,
+        UInputAction* InLookAction,
+        UInputAction* InJumpAction,
+        UInputAction* InSprintAction,
+        UInputAction* InCrouchAction);
+    void BindInputComponentForAutomationTests(UInputComponent* TestInputComponent);
+#endif
+
 protected:
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -44,6 +54,7 @@ protected:
 
 private:
     void ApplyInputMappingContext();
+    void BindConfiguredInputActions(UInputComponent* InputComponentToBind);
     void RemoveOwnedInputMappingContext();
     void ResetCharacterTransientState(APawn* PawnToReset) const;
 

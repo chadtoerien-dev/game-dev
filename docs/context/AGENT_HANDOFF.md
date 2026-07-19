@@ -33,13 +33,14 @@ Verified on 17 July 2026:
 Verified on 19 July 2026:
 
 - `TheVeilEditor` Development/Win64 build succeeded
-- all nine `TheVeil.*` automation tests passed with zero failures and zero skips, including movement-basis and sprint/crouch/reset transition coverage
+- all eleven `TheVeil.*` automation tests passed with zero failures and zero skips, including movement-basis, binding idempotence and controller cleanup coverage
 - manifest-driven Editor setup persisted five Input Actions, one Input Mapping Context and three derived Blueprints
 - `BP_TheVeilCharacter` contains one collision-free, navigation-neutral temporary ellipsoid visual attached to the native capsule
 - `L_Dev_Sandbox` persists `BP_TheVeilGameMode`, one loaded PlayerStart and zero placed auto-possessed pawns
-- strict read-only structural validation passed every automated check and dirtied neither map nor content
-- final build evidence: `Saved/BuildLogs/TheVeilEditor-Development-20260719-015835.log`
-- final automation evidence: `Saved/AutomationReports/20260719-015856` (9 succeeded, 0 failed, 0 skipped)
+- strict read-only structural validation passed all 60 automated checks and dirtied neither map nor content
+- compilation/link evidence: `Saved/BuildLogs/TheVeilEditor-Development-20260719-025121.log`
+- final automation evidence: `Saved/AutomationReports/20260719-030032` (11 succeeded, 0 failed, 0 skipped)
+- durable PR evidence: `docs/evidence/0.5-playable-foundation-automated-verification.md`
 - structural evidence: `Saved/PlayableFoundation/validation-report.json` (`automated_status: pass`, 0 failures)
 - King’s College, Cambridge is the approved one-to-one-scale, maximum-source-fidelity architectural basis for the bounded vertical-slice footprint
 
@@ -167,7 +168,11 @@ Expected tests:
 - `TheVeil.Claims.DirectContradiction`
 - `TheVeil.Claims.LocationContradiction`
 - `TheVeil.PlayableFoundation.CharacterDefaults`
+- `TheVeil.PlayableFoundation.CharacterStateTransitions`
+- `TheVeil.PlayableFoundation.ControllerBindings`
+- `TheVeil.PlayableFoundation.ControllerTransientCleanup`
 - `TheVeil.PlayableFoundation.GameModeDefaults`
+- `TheVeil.PlayableFoundation.MovementBasis`
 
 ## Current content state
 
@@ -271,10 +276,10 @@ launch sandbox
 → responsive camera-relative movement
 → sprint, crouch and jump
 → stable camera and collision
-→ reusable interaction trace
-→ open one test door or trigger one test interaction
 → exit PIE cleanly
 ```
+
+The reusable interaction trace and test-door loop belong to Milestone 0.6 after the 0.5 human acceptance gate.
 
 Acceptance criteria are defined in the roadmap.
 

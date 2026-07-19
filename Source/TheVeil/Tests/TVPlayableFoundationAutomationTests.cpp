@@ -7,9 +7,11 @@
 #include "Core/TheVeilGameMode.h"
 #include "Core/TheVeilGameState.h"
 #include "Core/TheVeilPlayerController.h"
+#include "EnhancedInputComponent.h"
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "InputAction.h"
 
 namespace
 {
@@ -196,6 +198,118 @@ bool FTVPlayableMovementBasisTest::RunTest(const FString& Parameters)
     TestTrue(
         TEXT("Right movement uses the yaw-relative basis"),
         RightInput.Equals(FVector(-1.0f, 0.0f, 0.0f), KINDA_SMALL_NUMBER));
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTVPlayableControllerBindingsTest,
+    "TheVeil.PlayableFoundation.ControllerBindings",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTVPlayableControllerBindingsTest::RunTest(const FString& Parameters)
+{
+    FTVScopedTestWorld TestWorld;
+    ATheVeilPlayerController* Controller = SpawnTestActor<ATheVeilPlayerController>(TestWorld.Get());
+    TestNotNull(TEXT("Controller spawns for binding test"), Controller);
+    if (Controller == nullptr)
+    {
+        return false;
+    }
+
+    UInputAction* MoveAction = NewObject<UInputAction>(Controller);
+    UInputAction* LookAction = NewObject<UInputAction>(Controller);
+    UInputAction* JumpAction = NewObject<UInputAction>(Controller);
+    UInputAction* SprintAction = NewObject<UInputAction>(Controller);
+    UInputAction* CrouchAction = NewObject<UInputAction>(Controller);
+    UEnhancedInputComponent* InputComponent = NewObject<UEnhancedInputComponent>(Controller);
+    TestNotNull(TEXT("Enhanced Input component is available"), InputComponent);
+    if (InputComponent == nullptr)
+    {
+        return false;
+    }
+
+    Controller->ConfigureInputActionsForAutomationTests(
+        MoveAction,
+        LookAction,
+        JumpAction,
+        SprintAction,
+        CrouchAction);
+    Controller->BindInputComponentForAutomationTests(InputComponent);
+
+    const auto CountBindings = [InputComponent](const UInputAction* Action, ETriggerEvent TriggerEvent)
+    {
+        int32 Count = 0;
+        for (const TUniquePtr<FEnhancedInputActionEventBinding>& Binding : InputComponent->GetActionEventBindings())
+        {
+            if (Binding->GetAction() == Action && Binding->GetTriggerEvent() == TriggerEvent)
+            {
+                ++Count;
+            }
+        }
+        return Count;
+    };
+
+    TestEqual(TEXT("Configured actions create nine event bindings"), InputComponent->GetActionEventBindings().Num(), 9);
+    TestEqual(TEXT("Move binds Triggered once"), CountBindings(MoveAction, ETriggerEvent::Triggered), 1);
+    TestEqual(TEXT("Look binds Triggered once"), CountBindings(LookAction, ETriggerEvent::Triggered), 1);
+    TestEqual(TEXT("Jump binds Started once"), CountBindings(JumpAction, ETriggerEvent::Started), 1);
+    TestEqual(TEXT("Jump binds Completed once"), CountBindings(JumpAction, ETriggerEvent::Completed), 1);
+    TestEqual(TEXT("Jump binds Canceled once"), CountBindings(JumpAction, ETriggerEvent::Canceled), 1);
+    TestEqual(TEXT("Sprint binds Started once"), CountBindings(SprintAction, ETriggerEvent::Started), 1);
+    TestEqual(TEXT("Sprint binds Completed once"), CountBindings(SprintAction, ETriggerEvent::Completed), 1);
+    TestEqual(TEXT("Sprint binds Canceled once"), CountBindings(SprintAction, ETriggerEvent::Canceled), 1);
+    TestEqual(TEXT("Crouch binds Started once"), CountBindings(CrouchAction, ETriggerEvent::Started), 1);
+
+    Controller->BindInputComponentForAutomationTests(InputComponent);
+    TestEqual(
+        TEXT("Rebinding the same component does not add duplicates"),
+        InputComponent->GetActionEventBindings().Num(),
+        9);
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTVPlayableControllerTransientCleanupTest,
+    "TheVeil.PlayableFoundation.ControllerTransientCleanup",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTVPlayableControllerTransientCleanupTest::RunTest(const FString& Parameters)
+{
+    FTVScopedTestWorld TestWorld;
+    ATheVeilPlayerController* Controller = SpawnTestActor<ATheVeilPlayerController>(TestWorld.Get());
+    ATheVeilCharacter* FirstCharacter = SpawnTestActor<ATheVeilCharacter>(TestWorld.Get());
+    ATheVeilCharacter* SecondCharacter = SpawnTestActor<ATheVeilCharacter>(TestWorld.Get());
+    TestNotNull(TEXT("Controller spawns for cleanup test"), Controller);
+    TestNotNull(TEXT("First character spawns for cleanup test"), FirstCharacter);
+    TestNotNull(TEXT("Second character spawns for cleanup test"), SecondCharacter);
+    if (Controller == nullptr || FirstCharacter == nullptr || SecondCharacter == nullptr)
+    {
+        return false;
+    }
+
+    Controller->SetPawn(FirstCharacter);
+    FirstCharacter->StartSprint();
+    FirstCharacter->GetCharacterMovement()->bWantsToCrouch = true;
+    SecondCharacter->StartSprint();
+    SecondCharacter->GetCharacterMovement()->bWantsToCrouch = true;
+
+    Controller->SetPawn(SecondCharacter);
+    TestFalse(TEXT("Pawn replacement clears sprint on the previous pawn"), FirstCharacter->IsSprinting());
+    TestFalse(
+        TEXT("Pawn replacement clears crouch intent on the previous pawn"),
+        FirstCharacter->GetCharacterMovement()->bWantsToCrouch);
+    TestFalse(TEXT("Pawn replacement clears sprint on the new pawn"), SecondCharacter->IsSprinting());
+    TestFalse(
+        TEXT("Pawn replacement clears crouch intent on the new pawn"),
+        SecondCharacter->GetCharacterMovement()->bWantsToCrouch);
+
+    SecondCharacter->StartSprint();
+    SecondCharacter->GetCharacterMovement()->bWantsToCrouch = true;
+    Controller->FlushPressedKeys();
+    TestFalse(TEXT("Focus-key flush clears sprint"), SecondCharacter->IsSprinting());
+    TestFalse(
+        TEXT("Focus-key flush clears crouch intent"),
+        SecondCharacter->GetCharacterMovement()->bWantsToCrouch);
     return true;
 }
 

@@ -28,13 +28,17 @@ void ATheVeilPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
     ApplyInputMappingContext();
+    BindConfiguredInputActions(InputComponent);
+}
 
-    if (BoundInputComponent.Get() == InputComponent)
+void ATheVeilPlayerController::BindConfiguredInputActions(UInputComponent* InputComponentToBind)
+{
+    if (BoundInputComponent.Get() == InputComponentToBind)
     {
         return;
     }
 
-    UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
+    UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponentToBind);
     if (EnhancedInputComponent == nullptr)
     {
         UE_LOG(LogTheVeilPlayerController, Error,
@@ -91,7 +95,7 @@ void ATheVeilPlayerController::SetupInputComponent()
         UE_LOG(LogTheVeilPlayerController, Warning, TEXT("CrouchAction is not assigned on %s."), *GetNameSafe(this));
     }
 
-    BoundInputComponent = InputComponent;
+    BoundInputComponent = InputComponentToBind;
 }
 
 void ATheVeilPlayerController::FlushPressedKeys()
@@ -115,6 +119,28 @@ void ATheVeilPlayerController::SetPawn(APawn* InPawn)
         ResetCharacterTransientState(InPawn);
     }
 }
+
+#if WITH_DEV_AUTOMATION_TESTS
+void ATheVeilPlayerController::ConfigureInputActionsForAutomationTests(
+    UInputAction* InMoveAction,
+    UInputAction* InLookAction,
+    UInputAction* InJumpAction,
+    UInputAction* InSprintAction,
+    UInputAction* InCrouchAction)
+{
+    MoveAction = InMoveAction;
+    LookAction = InLookAction;
+    JumpAction = InJumpAction;
+    SprintAction = InSprintAction;
+    CrouchAction = InCrouchAction;
+}
+
+void ATheVeilPlayerController::BindInputComponentForAutomationTests(
+    UInputComponent* TestInputComponent)
+{
+    BindConfiguredInputActions(TestInputComponent);
+}
+#endif
 
 void ATheVeilPlayerController::ApplyInputMappingContext()
 {

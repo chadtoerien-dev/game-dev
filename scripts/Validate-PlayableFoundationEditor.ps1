@@ -26,6 +26,9 @@ foreach ($requiredFile in @($engineExecutable, $projectFile, $manifestFile, $pyt
 }
 
 New-Item -ItemType Directory -Force -Path $evidenceDirectory | Out-Null
+if (Test-Path -LiteralPath $reportFile) {
+    Remove-Item -LiteralPath $reportFile -Force
+}
 $env:TV_PLAYABLE_MANIFEST = $manifestFile
 $env:TV_PLAYABLE_REPORT = $reportFile
 $env:TV_PLAYABLE_ALLOW_INCOMPLETE = if ($AllowIncomplete) { '1' } else { '0' }
@@ -49,6 +52,11 @@ finally {
     Remove-Item Env:TV_PLAYABLE_ALLOW_INCOMPLETE -ErrorAction SilentlyContinue
 }
 
+if ($commandExitCode -ne 0) {
+    Get-Content -LiteralPath $logFile | Select-Object -Last 80
+    throw "Playable Foundation validation failed with exit code $commandExitCode. See $logFile"
+}
+
 if (-not (Test-Path -LiteralPath $reportFile)) {
     Get-Content -LiteralPath $logFile | Select-Object -Last 80
     throw "Playable Foundation validation did not produce $reportFile"
@@ -62,8 +70,3 @@ Write-Host "Failures: $($report.failures.Count)"
 Write-Host "Map mutated by validation: $($report.map_mutated)"
 Write-Host "Content mutated by validation: $($report.content_mutated)"
 Write-Host "Report: $reportFile"
-
-if ($commandExitCode -ne 0) {
-    Get-Content -LiteralPath $logFile | Select-Object -Last 80
-    throw "Playable Foundation validation failed with exit code $commandExitCode. See $logFile"
-}

@@ -9,25 +9,27 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import traceback
 from typing import Any
 
 import unreal
 
+SCRIPT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+if SCRIPT_DIRECTORY not in sys.path:
+    sys.path.insert(0, SCRIPT_DIRECTORY)
+
+from playable_foundation_contract import (  # noqa: E402
+    CURRENT_BLUEPRINT_STATUSES,
+    EXPECTED_ASSET_PATHS,
+    blueprint_status_is_current,
+    enum_name,
+    validate_manifest_contract,
+)
+
 
 APPLY_CONFIRMATION = "CREATE_OR_REPAIR_PLAYABLE_FOUNDATION"
 MAP_APPLY_CONFIRMATION = "SET_PLAYABLE_FOUNDATION_SANDBOX_GAMEMODE"
-EXPECTED_ASSET_PATHS = {
-    "/Game/TheVeil/Input/IA_Move",
-    "/Game/TheVeil/Input/IA_Look",
-    "/Game/TheVeil/Input/IA_Jump",
-    "/Game/TheVeil/Input/IA_Sprint",
-    "/Game/TheVeil/Input/IA_Crouch",
-    "/Game/TheVeil/Input/IMC_Player",
-    "/Game/TheVeil/Characters/BP_TheVeilCharacter",
-    "/Game/TheVeil/Core/BP_TheVeilPlayerController",
-    "/Game/TheVeil/Core/BP_TheVeilGameMode",
-}
 DEFAULT_MANIFEST = os.path.join(
     unreal.Paths.project_dir(),
     "scripts",
@@ -59,52 +61,6 @@ def split_asset_path(asset_path: str) -> tuple[str, str]:
     return package_path, asset_name
 
 
-def validate_manifest_scope(manifest: dict) -> None:
-    if manifest.get("schema_version") != 1:
-        raise ValueError("Only Playable Foundation manifest schema version 1 is supported")
-
-    action_paths = [definition["asset"] for definition in manifest["input_actions"]]
-    mapping_context = manifest["mapping_context"]
-    blueprint_definitions = manifest["blueprints"]
-    if set(blueprint_definitions) != {"character", "controller", "game_mode"}:
-        raise ValueError("Manifest must define exactly character, controller and game_mode Blueprints")
-
-    declared_paths = set(action_paths)
-    declared_paths.add(mapping_context["asset"])
-    declared_paths.update(
-        definition["asset"] for definition in blueprint_definitions.values()
-    )
-    if declared_paths != EXPECTED_ASSET_PATHS:
-        raise PermissionError(
-            "Manifest asset scope differs from the nine authorised Playable Foundation paths"
-        )
-    if len(action_paths) != 5 or len(set(action_paths)) != 5:
-        raise ValueError("Manifest must define five unique Input Actions")
-    if len(mapping_context["mappings"]) != 13:
-        raise ValueError("Manifest must define exactly thirteen player mappings")
-    if any(
-        mapping["action"] not in set(action_paths)
-        for mapping in mapping_context["mappings"]
-    ):
-        raise PermissionError("Every mapping must reference a manifest-owned Input Action")
-    if manifest["map"]["asset"] != "/Game/Maps/L_Dev_Sandbox":
-        raise PermissionError("Only L_Dev_Sandbox may be inspected by this workflow")
-
-    placeholder = blueprint_definitions["character"].get("placeholder_visual", {})
-    if placeholder != {
-        "component_name": "PlaceholderVisual",
-        "component_class": "/Script/Engine.StaticMeshComponent",
-        "attach_to": "CapsuleComponent",
-        "mesh": "/Engine/BasicShapes/Sphere.Sphere",
-        "relative_location": {"x": 0.0, "y": 0.0, "z": 0.0},
-        "relative_rotation": {"pitch": 0.0, "yaw": 0.0, "roll": 0.0},
-        "relative_scale": [0.84, 0.84, 1.92],
-        "collision_profile": "NoCollision",
-        "can_ever_affect_navigation": False,
-    }:
-        raise PermissionError("Character placeholder visual differs from the authorised contract")
-
-
 def object_identity(value: Any) -> Any:
     if value is None:
         return None
@@ -129,7 +85,8 @@ class Setup:
             "map_mutated": False,
             "map_apply_requested": apply_map,
             "map_persisted": False,
-            "content_persisted": mode == "apply",
+            "content_persisted": False,
+            "saved_content_packages": [],
             "human_remaining": manifest.get("human_only", []),
         }
 
@@ -161,6 +118,9 @@ class Setup:
             return
         if not unreal.EditorAssetLibrary.save_loaded_asset(asset):
             raise RuntimeError(f"Unreal failed to save {asset.get_path_name()}")
+        package_path = asset.get_path_name().split(".", 1)[0]
+        if package_path not in self.report["saved_content_packages"]:
+            self.report["saved_content_packages"].append(package_path)
 
     def create_data_asset(self, asset_path: str, asset_type: type) -> Any:
         package_path, asset_name = split_asset_path(asset_path)
@@ -197,10 +157,86 @@ class Setup:
         return blueprint
 
     @staticmethod
-    def compile_blueprint(blueprint: Any) -> None:
+    def assert_blueprint_current(blueprint: Any) -> None:
+        status = blueprint.get_editor_property("status")
+        if not blueprint_status_is_current(status):
+            raise RuntimeError(
+                f"Blueprint {blueprint.get_path_name()} has non-current compiler status "
+                f"{enum_name(status)}; expected one of {sorted(CURRENT_BLUEPRINT_STATUSES)}"
+            )
+
+    @classmethod
+    def compile_blueprint(cls, blueprint: Any) -> None:
         library = getattr(unreal, "BlueprintEditorLibrary", None)
-        if library is not None:
-            library.compile_blueprint(blueprint)
+        if library is None:
+            raise RuntimeError("BlueprintEditorLibrary is unavailable; compile status cannot be proven")
+        library.compile_blueprint(blueprint)
+        cls.assert_blueprint_current(blueprint)
+
+    def preflight_apply(self) -> None:
+        """Validate every predictable dependency before the first package save."""
+
+        for definition in self.manifest["input_actions"]:
+            existing = self.load_asset(definition["asset"])
+            if existing is not None and not isinstance(existing, unreal.InputAction):
+                raise TypeError(f"{definition['asset']} exists but is not an Input Action")
+            getattr(unreal.InputActionValueType, definition["value_type"])
+            getattr(
+                unreal.InputActionAccumulationBehavior,
+                definition["accumulation_behavior"],
+            )
+
+        mapping_definition = self.manifest["mapping_context"]
+        existing_context = self.load_asset(mapping_definition["asset"])
+        if existing_context is not None and not isinstance(
+            existing_context, unreal.InputMappingContext
+        ):
+            raise TypeError(
+                f"{mapping_definition['asset']} exists but is not an Input Mapping Context"
+            )
+        for mapping in mapping_definition["mappings"]:
+            key = unreal.Key()
+            if not key.import_text(mapping["key"]):
+                raise ValueError(f"Unreal rejected input key {mapping['key']}")
+            for modifier in mapping.get("modifiers", []):
+                modifier_type = modifier["type"]
+                if modifier_type == "swizzle":
+                    getattr(unreal.InputAxisSwizzle, modifier["order"])
+                elif modifier_type == "dead_zone":
+                    getattr(unreal.DeadZoneType, modifier["mode"])
+
+        for definition in self.manifest["blueprints"].values():
+            parent_class = unreal.load_class(None, definition["parent_class"])
+            if parent_class is None:
+                raise RuntimeError(
+                    f"Native parent class is unavailable: {definition['parent_class']}"
+                )
+            existing_blueprint = self.load_asset(definition["asset"])
+            if existing_blueprint is None:
+                continue
+            if not isinstance(existing_blueprint, unreal.Blueprint):
+                raise TypeError(f"{definition['asset']} exists but is not a Blueprint")
+            actual_parent = existing_blueprint.get_blueprint_parent_class()
+            if object_identity(actual_parent) != object_identity(parent_class):
+                raise TypeError(
+                    f"{definition['asset']} does not derive from {definition['parent_class']}"
+                )
+            self.compile_blueprint(existing_blueprint)
+
+        visual_definition = self.manifest["blueprints"]["character"][
+            "placeholder_visual"
+        ]
+        if not isinstance(unreal.load_asset(visual_definition["mesh"]), unreal.StaticMesh):
+            raise RuntimeError(
+                f"Placeholder mesh is unavailable: {visual_definition['mesh']}"
+            )
+
+        if self.applying_map:
+            map_path = self.manifest["map"]["asset"]
+            if unreal.EditorLoadingAndSavingUtils.load_map(map_path) is None:
+                raise RuntimeError(f"Unreal could not load the authorised map: {map_path}")
+
+        self.record("manifest", "preflight_passed", "all predictable apply dependencies")
 
     @staticmethod
     def blueprint_subobjects(blueprint: Any) -> list[tuple[Any, str, Any]]:
@@ -365,6 +401,8 @@ class Setup:
             )
         elif not isinstance(blueprint, unreal.Blueprint):
             raise TypeError(f"{asset_path} exists but is not a Blueprint")
+
+        self.assert_blueprint_current(blueprint)
 
         generated_class = (
             unreal.EditorAssetLibrary.load_blueprint_class(asset_path)
@@ -538,14 +576,6 @@ class Setup:
     def ensure_map_game_mode(self) -> None:
         definition = self.manifest["map"]
         map_path = definition["asset"]
-        expected_class = unreal.EditorAssetLibrary.load_blueprint_class(
-            definition["game_mode_override"]
-        )
-        if expected_class is None:
-            raise RuntimeError(
-                f"Required map GameMode class is unavailable: {definition['game_mode_override']}"
-            )
-
         if not self.apply_map:
             self.record(
                 map_path,
@@ -556,6 +586,14 @@ class Setup:
         if not self.applying_map:
             self.record(map_path, "would_set", "sandbox GameMode override")
             return
+
+        expected_class = unreal.EditorAssetLibrary.load_blueprint_class(
+            definition["game_mode_override"]
+        )
+        if expected_class is None:
+            raise RuntimeError(
+                f"Required map GameMode class is unavailable: {definition['game_mode_override']}"
+            )
 
         world = unreal.EditorLoadingAndSavingUtils.load_map(map_path)
         if world is None:
@@ -576,6 +614,9 @@ class Setup:
         self.record(map_path, "set_and_saved", "sandbox GameMode override")
 
     def run(self) -> dict:
+        if self.applying:
+            self.preflight_apply()
+
         for action_definition in self.manifest["input_actions"]:
             self.ensure_input_action(action_definition)
 
@@ -597,6 +638,9 @@ class Setup:
             self.report["status"] = "probe_applied_in_memory"
         else:
             self.report["status"] = "applied"
+            self.report["content_persisted"] = set(
+                self.report["saved_content_packages"]
+            ) == set(EXPECTED_ASSET_PATHS)
         return self.report
 
 
@@ -622,7 +666,7 @@ def main() -> None:
     manifest_path = os.environ.get("TV_PLAYABLE_MANIFEST", DEFAULT_MANIFEST)
     report_path = os.environ.get("TV_PLAYABLE_REPORT", DEFAULT_REPORT)
     manifest = load_json(manifest_path)
-    validate_manifest_scope(manifest)
+    validate_manifest_contract(manifest)
     setup = Setup(manifest, mode, apply_map)
 
     try:

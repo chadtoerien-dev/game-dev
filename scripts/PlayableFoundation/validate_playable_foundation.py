@@ -4,10 +4,22 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import traceback
 from typing import Any
 
 import unreal
+
+SCRIPT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+if SCRIPT_DIRECTORY not in sys.path:
+    sys.path.insert(0, SCRIPT_DIRECTORY)
+
+from playable_foundation_contract import (  # noqa: E402
+    CURRENT_BLUEPRINT_STATUSES,
+    blueprint_status_is_current,
+    enum_name,
+    validate_manifest_contract,
+)
 
 
 DEFAULT_MANIFEST = os.path.join(
@@ -21,19 +33,6 @@ DEFAULT_REPORT = os.path.join(
     "PlayableFoundation",
     "validation-report.json",
 )
-EXPECTED_ASSET_PATHS = {
-    "/Game/TheVeil/Input/IA_Move",
-    "/Game/TheVeil/Input/IA_Look",
-    "/Game/TheVeil/Input/IA_Jump",
-    "/Game/TheVeil/Input/IA_Sprint",
-    "/Game/TheVeil/Input/IA_Crouch",
-    "/Game/TheVeil/Input/IMC_Player",
-    "/Game/TheVeil/Characters/BP_TheVeilCharacter",
-    "/Game/TheVeil/Core/BP_TheVeilPlayerController",
-    "/Game/TheVeil/Core/BP_TheVeilGameMode",
-}
-
-
 def load_json(path: str) -> dict:
     with open(path, "r", encoding="utf-8") as source_file:
         return json.load(source_file)
@@ -45,38 +44,6 @@ def write_json(path: str, payload: dict) -> None:
     with open(absolute_path, "w", encoding="utf-8") as destination_file:
         json.dump(payload, destination_file, indent=2, sort_keys=True)
         destination_file.write("\n")
-
-
-def validate_manifest_scope(manifest: dict) -> None:
-    if manifest.get("schema_version") != 1:
-        raise ValueError("Only Playable Foundation manifest schema version 1 is supported")
-    action_paths = [definition["asset"] for definition in manifest["input_actions"]]
-    blueprint_definitions = manifest["blueprints"]
-    declared_paths = set(action_paths)
-    declared_paths.add(manifest["mapping_context"]["asset"])
-    declared_paths.update(
-        definition["asset"] for definition in blueprint_definitions.values()
-    )
-    if declared_paths != EXPECTED_ASSET_PATHS:
-        raise PermissionError(
-            "Manifest asset scope differs from the nine authorised Playable Foundation paths"
-        )
-    if manifest["map"]["asset"] != "/Game/Maps/L_Dev_Sandbox":
-        raise PermissionError("Only L_Dev_Sandbox may be inspected by this validator")
-
-    placeholder = blueprint_definitions["character"].get("placeholder_visual", {})
-    if placeholder != {
-        "component_name": "PlaceholderVisual",
-        "component_class": "/Script/Engine.StaticMeshComponent",
-        "attach_to": "CapsuleComponent",
-        "mesh": "/Engine/BasicShapes/Sphere.Sphere",
-        "relative_location": {"x": 0.0, "y": 0.0, "z": 0.0},
-        "relative_rotation": {"pitch": 0.0, "yaw": 0.0, "roll": 0.0},
-        "relative_scale": [0.84, 0.84, 1.92],
-        "collision_profile": "NoCollision",
-        "can_ever_affect_navigation": False,
-    }:
-        raise PermissionError("Character placeholder visual differs from the authorised contract")
 
 
 def object_path_for_asset(asset_path: str) -> str:
@@ -94,10 +61,6 @@ def identity(value: Any) -> Any:
     if hasattr(value, "get_path_name"):
         return value.get_path_name()
     return str(value)
-
-
-def enum_name(value: Any) -> str:
-    return getattr(value, "name", str(value).split(".")[-1].split(":")[0].strip(" <>"))
 
 
 def load_asset_if_present(asset_path: str) -> Any:
@@ -279,6 +242,19 @@ class Validator:
             blueprint.get_class().get_name() if blueprint else None,
         )
         if not exists or parent_class is None:
+            return None
+
+        compile_status = blueprint.get_editor_property("status")
+        compile_status_name = enum_name(compile_status)
+        compile_current = blueprint_status_is_current(compile_status)
+        self.check(
+            f"blueprint.compile_status:{asset_path}",
+            compile_current,
+            sorted(CURRENT_BLUEPRINT_STATUSES),
+            compile_status_name,
+            "Generated classes are not accepted when the Blueprint compiler status is stale or erroneous.",
+        )
+        if not compile_current:
             return None
 
         actual_parent_class = blueprint.get_blueprint_parent_class()
@@ -502,7 +478,8 @@ class Validator:
             actual_game_mode,
         )
 
-        actors = unreal.EditorLevelLibrary.get_all_level_actors()
+        actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+        actors = actor_subsystem.get_all_level_actors()
         player_starts = [actor for actor in actors if isinstance(actor, unreal.PlayerStart)]
         self.check(
             "map.player_start_count",
@@ -577,7 +554,7 @@ def main() -> None:
     report_path = os.environ.get("TV_PLAYABLE_REPORT", DEFAULT_REPORT)
     allow_incomplete = os.environ.get("TV_PLAYABLE_ALLOW_INCOMPLETE") == "1"
     manifest = load_json(manifest_path)
-    validate_manifest_scope(manifest)
+    validate_manifest_contract(manifest)
     report = Validator(manifest).run()
     write_json(report_path, report)
     unreal.log(f"TV_PLAYABLE_VALIDATION_REPORT={os.path.abspath(report_path)}")
