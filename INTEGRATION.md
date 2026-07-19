@@ -270,20 +270,18 @@ Expected tests:
 - `TheVeil.PlayableFoundation.GameModeDefaults`
 - `TheVeil.PlayableFoundation.MovementBasis`
 
-All seven passed locally on 18 July 2026 with zero failures and zero skips.
+All nine passed locally on 19 July 2026 with zero failures and zero skips.
 
 ## 19 July 2026 non-human verification evidence
 
-- UE API capability probe: UE `5.8.0-55116800`; native character, controller and GameMode classes loaded; transient Input Action, mapping, key and modifier construction succeeded.
-- Setup dry run: `dry_run_complete`; nine bounded assets reported; `map_mutated: false`.
-- In-memory apply rehearsal: all five Input Actions, thirteen exact mappings and three derived Blueprints created and wired; `probe_applied_in_memory`; `content_persisted: false`; `map_mutated: false`; the Git `Content` status was empty before and after.
-- Read-only sandbox validation: map loaded; one PlayerStart; zero placed auto-possessed pawns; nine assets and the GameMode override still correctly reported absent before the human checkpoint.
-- Build: `Saved/BuildLogs/TheVeilEditor-Development-20260719-010117.log` reports `Result: Succeeded`.
-- Automation: `Saved/AutomationReports/20260719-010129/index.json` reports 7 succeeded, 0 failed and 0 not run.
-- Combined command: `powershell -ExecutionPolicy Bypass -File ".\scripts\Verify-PlayableFoundation.ps1" -AllowIncompleteEditorIntegration` completed successfully.
+- Guarded setup: `powershell -ExecutionPolicy Bypass -File ".\scripts\Prepare-PlayableFoundationEditor.ps1" -Apply -ApplyMap` persisted the nine manifest-owned assets and the sandbox GameMode override. An idempotent re-run reported `map_mutated: false`, `map_persisted: true` and zero errors.
+- Strict read-only validation: `Saved/PlayableFoundation/validation-report.json` reports `automated_status: pass`, zero failures, `map_mutated: false` and `content_mutated: false`. The map loaded with one PlayerStart, zero placed auto-possessed pawns, all nine assets and the intended GameMode override.
+- Build: `Saved/BuildLogs/TheVeilEditor-Development-20260719-015835.log` reports `Result: Succeeded`.
+- Automation: `Saved/AutomationReports/20260719-015856/index.json` reports 9 succeeded, 0 failed and 0 not run.
+- Repository audit: `git diff --check` passed; the bounded integration was committed as `7a3f172` with no World Partition companion or protected social-system changes.
 
-Reports and logs under `Saved/` are local evidence and remain excluded from source control. Re-run the combined command without the allow-incomplete switch after the binary integration session.
+Reports and logs under `Saved/` are local evidence and remain excluded from source control. Structural integration is complete; the manual PIE checklist remains required for physical input, spatial, feel and visual acceptance.
 
 ## Current playable boundary
 
-`/Game/Maps/L_Dev_Sandbox` exists, loads and passed the pre-0.5 PIE smoke test. The native character, PlayerController and GameMode build and pass automation. The 19 July read-only validator found one loaded PlayerStart and zero placed auto-possessed pawns, but the nine manifest-owned input/Blueprint assets and intended GameMode override are absent; PlayerStart clearance also remains a viewport judgement. The automation package now prepares and validates the non-map assets, leaving binary apply/review, map ownership, PIE feel and capture evidence for the human checkpoint. Interaction, embodied contestant, Tribunal and night-operation content remain future milestones.
+`/Game/Maps/L_Dev_Sandbox` exists, loads and passed the pre-0.5 PIE smoke test. The saved map now uses the intended GameMode, the nine manifest-owned input/Blueprint assets are persisted and wired, and strict validation reports one loaded PlayerStart with zero placed auto-possessed pawns. The native character, PlayerController and GameMode build and all nine automation tests pass. PlayerStart clearance, physical keyboard/controller behaviour, camera feel and collision, focus-loss recovery, the two-minute PIE soak and capture evidence remain the human acceptance boundary. Interaction, embodied contestants, the Tribunal and night-operation content remain future milestones.

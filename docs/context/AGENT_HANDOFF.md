@@ -199,7 +199,7 @@ At the verification point, content comprised approximately 145 files and 31.24 M
 /Game/Maps/L_Dev_Sandbox.L_Dev_Sandbox
 ```
 
-The sandbox can enter and exit PIE. Native player, movement, camera and GameMode classes exist, but the saved map does not yet reference their derived Blueprint and input assets.
+The sandbox can enter and exit the previously verified pre-0.5 PIE smoke test. The native player, movement, camera and GameMode classes exist; the saved map now references the manifest-generated Blueprint and Enhanced Input assets and passes strict structural validation. Physical-input, camera-feel and final visual acceptance remain pending.
 
 ## Native architecture implemented
 
