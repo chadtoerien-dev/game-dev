@@ -267,6 +267,7 @@ class Setup:
 
         context.modify()
         context.unmap_all()
+        generated_mappings = []
         for mapping_definition in definition["mappings"]:
             action = self.load_asset(mapping_definition["action"])
             if not isinstance(action, unreal.InputAction):
@@ -284,6 +285,14 @@ class Setup:
                 for modifier_definition in mapping_definition.get("modifiers", [])
             ]
             mapping.set_editor_property("modifiers", modifiers)
+            generated_mappings.append(mapping)
+
+        # Python receives MapKey's UStruct return value by copy. Assign the
+        # completed mappings back to the reflected container so instanced
+        # modifiers are serialised into the Input Mapping Context asset.
+        mapping_data = context.get_editor_property("default_key_mappings")
+        mapping_data.set_editor_property("mappings", generated_mappings)
+        context.set_editor_property("default_key_mappings", mapping_data)
 
         self.save_asset(context)
         self.record(
