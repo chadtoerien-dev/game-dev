@@ -13,7 +13,7 @@ Verified on 19 July 2026 unless otherwise noted:
 - successful `TheVeilEditor` Development/Win64 build
 - twelve passing `TheVeil.*` automation tests
 - strict structural validation of the saved Playable Foundation assets and map integration with zero failures
-- successful pre-0.5 `L_Dev_Sandbox` PIE smoke test on 17 July 2026; physical-input, camera-feel and final visual acceptance remain a human checkpoint
+- successful final `L_Dev_Sandbox` Editor/PIE acceptance on 19 July 2026, including physical input, camera feel/collision, focus-loss recovery and Product Owner visual approval
 
 Build:
 
@@ -122,7 +122,7 @@ The manual settings above remain the authoritative fallback. The preferred route
    powershell -ExecutionPolicy Bypass -File ".\scripts\Verify-PlayableFoundation.ps1"
    ```
 
-7. Open Unreal Editor only for the remaining human checks: inspect the existing PlayerStart for ground/capsule clearance and `BADsize`, judge the temporary visual, and run the manual PIE checklist below. Structural validation cannot prove camera feel, collision judder, physical controller input, focus-loss recovery or soak stability.
+7. Open Unreal Editor for the human checks: inspect the existing PlayerStart for ground/capsule clearance and `BADsize`, judge the temporary visual, and run the manual PIE checklist below. Structural validation cannot prove camera feel, collision judder, physical controller input, focus-loss recovery or soak stability. This gate was completed and accepted on 19 July 2026.
 
 Generated reports and commandlet logs are under ignored `Saved/PlayableFoundation/`. The checked scripts invoke the installed UE 5.8 Python Editor plugin only for the commandlet; they do not add a permanent project plugin or config dependency.
 
@@ -284,8 +284,18 @@ All twelve passed locally on 19 July 2026 with zero failures and zero skips.
 - Durable evidence: `docs/evidence/0.5-playable-foundation-automated-verification.md` records the commands, extracts and SHA-256 checksums required by remote PR reviewers.
 - Repository audit: working-tree, staged-index and complete `origin/main...HEAD` whitespace checks passed, with no World Partition companion or protected social-system changes.
 
-Reports and logs under `Saved/` are local evidence and remain excluded from source control. Structural integration is complete; the manual PIE checklist remains required for physical input, spatial, feel and visual acceptance.
+Reports and logs under `Saved/` are local evidence and remain excluded from source control. Structural integration is complete; the final human acceptance is recorded in `docs/evidence/0.5-playable-foundation-human-acceptance.md`.
+
+## 19 July 2026 human acceptance evidence
+
+- `L_Dev_Sandbox` visibly resolved `BP_TheVeilGameMode` and the Outliner showed exactly one PlayerStart among 138 loaded actors.
+- The selected PlayerStart had walkable-ground/capsule clearance and displayed no `BADsize`; PIE spawned exactly one controlled temporary pawn without intersection or fall-through.
+- Keyboard movement, mouse look, sprint, crouch and jump were exercised in PIE, including a visible jump/land cycle and crouch/stand transition.
+- A fresh continuous soak ran for 137 seconds and `Esc` returned cleanly to the Editor.
+- Output Log searches returned no `Fatal` or `LogPIE: Error` entries for the session.
+- Chad Toerien confirmed the remaining physical-controller parity, camera collision/feel and focus-loss recovery checks, accepted the temporary visual for this milestone and instructed the project to proceed.
+- The live session was not retained as a video file. The Product Owner attestation is the durable acceptance record; no capture artefact is claimed.
 
 ## Current playable boundary
 
-`/Game/Maps/L_Dev_Sandbox` exists, loads and passed the pre-0.5 PIE smoke test. The saved map now uses the intended GameMode, the nine manifest-owned input/Blueprint assets are persisted and wired, and strict validation reports one loaded PlayerStart with zero placed auto-possessed pawns. The native character, PlayerController and GameMode build and all twelve automation tests pass. PlayerStart clearance, physical keyboard/controller behaviour, camera feel and collision, focus-loss recovery, the two-minute PIE soak and capture evidence remain the human acceptance boundary. Interaction, embodied contestants, the Tribunal and night-operation content remain future milestones.
+`/Game/Maps/L_Dev_Sandbox` now provides the accepted 0.5 playable shell. The saved map uses the intended GameMode, the nine manifest-owned input/Blueprint assets are persisted and wired, strict validation reports one loaded PlayerStart with zero placed auto-possessed pawns, all twelve automation tests pass, and the final Editor/PIE gate is accepted. Interaction, embodied contestants, the Tribunal, night-operation content and the maximum-fidelity King’s College environment remain future milestones.

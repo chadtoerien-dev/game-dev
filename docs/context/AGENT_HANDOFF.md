@@ -18,7 +18,7 @@ The intended experience combines:
 
 ## Executive state
 
-The native social-simulation foundation has reached milestone **0.4**. The native and saved structural integration for milestone **0.5** are implemented, verified locally and independently approved with non-blocking findings addressed; subjective Editor/PIE acceptance remains.
+The native social-simulation foundation has reached milestone **0.4**, and Playable Foundation **0.5** is complete. Its native implementation, saved integration, automated verification, independent review and human Editor/PIE acceptance are recorded on the feature branch and PR.
 
 Verified on 17 July 2026:
 
@@ -42,9 +42,13 @@ Verified on 19 July 2026:
 - final automation evidence: `Saved/AutomationReports/20260719-032716` (12 succeeded, 0 warnings, 0 failed, 0 skipped)
 - durable PR evidence: `docs/evidence/0.5-playable-foundation-automated-verification.md`
 - structural evidence: `Saved/PlayableFoundation/validation-report.json` (`automated_status: pass`, 0 failures)
+- live Editor evidence confirmed the intended GameMode, exactly one clear PlayerStart, one controlled pawn, keyboard movement, mouse look, sprint, crouch, jump and clean PIE exit
+- a fresh continuous PIE soak ran for 137 seconds; Output Log filters found no `Fatal` or `LogPIE: Error` entries
+- Chad Toerien confirmed physical controller parity, camera collision/feel, focus-loss recovery and the temporary visual, then approved progression
+- durable human evidence: `docs/evidence/0.5-playable-foundation-human-acceptance.md`
 - King’s College, Cambridge is the approved one-to-one-scale, maximum-source-fidelity architectural basis for the bounded vertical-slice footprint
 
-The saved playable shell now exists. The next gate is a human Editor/PIE acceptance session for physical controller parity, camera feel/collision, focus-loss recovery, spawn clearance, the two-minute soak and capture evidence.
+The saved playable shell is accepted. The next production milestone is **0.6 — Interaction and Camera Feel**; it must add a bounded, testable interaction loop without expanding into final environment art.
 
 ## Repository and local environment
 
@@ -205,7 +209,7 @@ At the verification point, content comprised approximately 145 files and 31.24 M
 /Game/Maps/L_Dev_Sandbox.L_Dev_Sandbox
 ```
 
-The sandbox can enter and exit the previously verified pre-0.5 PIE smoke test. The native player, movement, camera and GameMode classes exist; the saved map now references the manifest-generated Blueprint and Enhanced Input assets and passes strict structural validation. Physical-input, camera-feel and final visual acceptance remain pending.
+The sandbox enters and exits PIE cleanly, spawns one controlled pawn at the deliberate PlayerStart and uses the manifest-generated Blueprint and Enhanced Input assets. The native player, movement, camera and GameMode classes pass structural, automated and Product Owner acceptance.
 
 ## Native architecture implemented
 
@@ -267,20 +271,20 @@ Use `docs/context/CURSOR_MIGRATION_CHECKLIST.md` for the final reconciliation pr
 
 ## Immediate next milestone
 
-The next milestone is **Playable Foundation 0.5**, not final art and not a larger estate.
+The next milestone is **Interaction and Camera Feel 0.6**, not final art and not a larger estate.
 
 Required result:
 
 ```text
-launch sandbox
-→ spawn controlled third-person character
-→ responsive camera-relative movement
-→ sprint, crouch and jump
-→ stable camera and collision
-→ exit PIE cleanly
+approach a test object
+→ acquire a valid focus target
+→ show a clear development prompt
+→ interact once per input press
+→ reject blocked or out-of-range targets
+→ preserve keyboard/controller parity and stable camera behaviour
 ```
 
-The reusable interaction trace and test-door loop belong to Milestone 0.6 after the 0.5 human acceptance gate.
+Create the Milestone 0.6 task brief before implementation. Its bounded implementation should introduce the reusable interaction interface/trace, a test door, one inspectable or collectible object, prompt state and focused automation.
 
 Acceptance criteria are defined in the roadmap.
 
@@ -295,9 +299,8 @@ After that:
 
 ## Known limitations
 
-- No polished player locomotion or animation stack
-- No approved physical-controller or camera-feel evidence for the saved playable shell
-- No human-approved PlayerStart clearance/`BADsize` evidence or two-minute PIE capture
+- The accepted player remains a collision-free temporary ellipsoid with no polished locomotion or animation stack
+- The live 0.5 acceptance session has a durable written attestation but no retained video file
 - No embodied NPC StateTrees in the saved sandbox
 - No playable conversation interface
 - No interactive Tribunal UI
@@ -307,15 +310,13 @@ After that:
 - No packaged Development build yet
 - No CI runner currently proves the Windows UE build on every PR
 
-## Immediate human checkpoint
+## Immediate delivery task
 
-Use the preferred automation route in `INTEGRATION.md`:
-
-1. review the checked binary list and strict structural report;
-2. open the Editor and inspect the existing PlayerStart for walkable-ground clearance and absence of `BADsize` without moving it unless necessary;
-3. approve or replace the collision-free temporary visual without adding gameplay or collision authority;
-4. complete the keyboard/controller, camera collision, focus-loss and two-minute PIE checklist;
-5. return the capture, Editor log and any legitimate post-inspection binary changes for independent review.
+1. merge the accepted 0.5 pull request after the final documentation review;
+2. create a dedicated Milestone 0.6 task brief and branch;
+3. implement the smallest reusable interaction interface/trace and test-door loop;
+4. preserve the accepted movement/input shell and all social-system boundaries;
+5. keep the King’s College reconstruction as the approved spatial target without starting final-art production before the complete loop is stable.
 
 ## Definition of done for every milestone
 

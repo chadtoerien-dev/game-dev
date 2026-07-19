@@ -1,6 +1,6 @@
 # The Veil Development Roadmap
 
-Last updated: 17 July 2026
+Last updated: 19 July 2026
 
 ## Product destination
 
@@ -112,7 +112,7 @@ The GitHub migration checklist must confirm the local UE5.8 repair commit and de
 
 ## Milestone 0.5 — Playable Foundation
 
-**Status:** In progress — native source and automation verified locally; human Editor/PIE gate pending
+**Status:** Complete — Product Owner accepted the full Editor/PIE checklist on 19 July 2026
 
 **Objective:** turn `L_Dev_Sandbox` into a controllable third-person game rather than an editor-only map.
 
@@ -156,7 +156,7 @@ The GitHub migration checklist must confirm the local UE5.8 repair commit and de
 
 ## Milestone 0.6 — Interaction and Camera Feel
 
-**Status:** Next after 0.5
+**Status:** Next
 
 **Objective:** prove a responsive action-adventure interaction loop.
 
