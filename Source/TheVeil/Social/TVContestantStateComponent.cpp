@@ -1,6 +1,15 @@
 #include "Social/TVContestantStateComponent.h"
 
 UTVContestantStateComponent::UTVContestantStateComponent() { PrimaryComponentTick.bCanEverTick = false; }
+bool UTVContestantStateComponent::InitialiseContestantId(const FName InContestantId)
+{
+    if (InContestantId.IsNone() || (!ContestantId.IsNone() && ContestantId != InContestantId))
+    {
+        return false;
+    }
+    ContestantId = InContestantId;
+    return true;
+}
 void UTVContestantStateComponent::SetTrustToPlayer(const float NewValue, const FName Reason) { TrustToPlayer = FMath::Clamp(NewValue, 0.0f, 100.0f); BroadcastChange(Reason); }
 void UTVContestantStateComponent::AddTrustToPlayer(const float Delta, const FName Reason) { SetTrustToPlayer(TrustToPlayer + Delta, Reason); }
 void UTVContestantStateComponent::SetFearOfPlayer(const float NewValue, const FName Reason) { FearOfPlayer = FMath::Clamp(NewValue, 0.0f, 100.0f); BroadcastChange(Reason); }

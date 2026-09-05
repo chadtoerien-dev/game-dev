@@ -183,7 +183,7 @@ The GitHub migration checklist must confirm the local UE5.8 repair commit and de
 
 ## Milestone 0.7 — Embodied Contestants
 
-**Status:** Later
+**Status:** In progress on `codex/embodied-contestants-0.7`; 0.7a native implementation, build, automation and independent review complete, PIE acceptance pending
 
 **Objective:** place visible placeholder contestants into the sandbox and connect them to the native state model.
 

@@ -283,6 +283,8 @@ Use `docs/context/CURSOR_MIGRATION_CHECKLIST.md` for the final reconciliation pr
 
 The active milestone is **Interaction and Camera Feel 0.6**, not final art and not a larger estate.
 
+Update, 6 September 2026: the reviewed 0.6 implementation is preserved in commit `65566ff`. A stacked `codex/embodied-contestants-0.7` branch now contains the first 0.7a increment: Eleanor, Marcus and Beatrice development placeholders with stable state identities, memory/witness components, bounded patrols and typed greetings. Build and 19 tests pass; independent review approves the corrected diff. Human PIE acceptance remains required.
+
 Required result:
 
 ```text

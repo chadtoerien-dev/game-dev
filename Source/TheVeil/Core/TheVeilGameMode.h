@@ -16,4 +16,5 @@ public:
 
 private:
     void SpawnDevelopmentInteractionActors();
+    void SpawnDevelopmentContestants();
 };

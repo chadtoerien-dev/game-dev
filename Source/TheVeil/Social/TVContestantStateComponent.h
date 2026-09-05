@@ -19,6 +19,7 @@ public:
     UFUNCTION(BlueprintPure, Category="The Veil|Contestant") float GetFearOfPlayer() const { return FearOfPlayer; }
     UFUNCTION(BlueprintPure, Category="The Veil|Contestant") FGameplayTagContainer GetKnowledgeTags() const { return KnowledgeTags; }
     UFUNCTION(BlueprintPure, Category="The Veil|Contestant") FGameplayTagContainer GetAccessGrantTags() const { return AccessGrantTags; }
+    UFUNCTION(BlueprintCallable, Category="The Veil|Contestant") bool InitialiseContestantId(FName InContestantId);
     UFUNCTION(BlueprintCallable, Category="The Veil|Contestant") void SetTrustToPlayer(float NewValue, FName Reason);
     UFUNCTION(BlueprintCallable, Category="The Veil|Contestant") void AddTrustToPlayer(float Delta, FName Reason);
     UFUNCTION(BlueprintCallable, Category="The Veil|Contestant") void SetFearOfPlayer(float NewValue, FName Reason);
