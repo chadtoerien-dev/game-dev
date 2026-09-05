@@ -48,7 +48,17 @@ Verified on 19 July 2026:
 - durable human evidence: `docs/evidence/0.5-playable-foundation-human-acceptance.md`
 - King’s College, Cambridge is the approved one-to-one-scale, maximum-source-fidelity architectural basis for the bounded vertical-slice footprint
 
-The saved playable shell is accepted. The next production milestone is **0.6 — Interaction and Camera Feel**; it must add a bounded, testable interaction loop without expanding into final environment art.
+Verified on 19 July 2026 for Milestone 0.6:
+
+- `TheVeilEditor` Development/Win64 build succeeded on `codex/interaction-camera-feel-0.6`
+- all eighteen `TheVeil.*` automation tests passed with zero failures, zero warnings and zero not-run tests
+- new interaction tests cover focus prompt and activation, occlusion rejection, range rejection, test-door toggling, native fallback bindings and configured `IA_Interact` suppression of fallback keys
+- compilation/link evidence: `Saved/BuildLogs/TheVeilEditor-Development-20260719-161705.log`
+- final automation evidence: `Saved/AutomationReports/20260719-161801` (18 succeeded, 0 warnings, 0 failed, 0 not run)
+- durable evidence: `docs/evidence/0.6-interaction-camera-feel-automated-verification.md`
+- remaining 0.6 gate: subjective Editor/PIE interaction and camera-feel acceptance in `/Game/Maps/L_Dev_Sandbox`
+
+The current production milestone remains **0.6 - Interaction and Camera Feel** on `codex/interaction-camera-feel-0.6`; the bounded native interaction loop has passed build and automation without expanding into final environment art. Only subjective Editor/PIE interaction and camera-feel acceptance remains.
 
 ## Repository and local environment
 
@@ -271,7 +281,7 @@ Use `docs/context/CURSOR_MIGRATION_CHECKLIST.md` for the final reconciliation pr
 
 ## Immediate next milestone
 
-The next milestone is **Interaction and Camera Feel 0.6**, not final art and not a larger estate.
+The active milestone is **Interaction and Camera Feel 0.6**, not final art and not a larger estate.
 
 Required result:
 
@@ -284,7 +294,7 @@ approach a test object
 → preserve keyboard/controller parity and stable camera behaviour
 ```
 
-Create the Milestone 0.6 task brief before implementation. Its bounded implementation should introduce the reusable interaction interface/trace, a test door, one inspectable or collectible object, prompt state and focused automation.
+The Milestone 0.6 task brief is `docs/tasks/0.6-interaction-camera-feel.md`. Its bounded implementation should introduce the reusable interaction interface/trace, a test door, one inspectable or collectible object, prompt state and focused automation.
 
 Acceptance criteria are defined in the roadmap.
 

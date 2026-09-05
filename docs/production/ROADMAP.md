@@ -156,7 +156,7 @@ The GitHub migration checklist must confirm the local UE5.8 repair commit and de
 
 ## Milestone 0.6 — Interaction and Camera Feel
 
-**Status:** Next
+**Status:** In progress on `codex/interaction-camera-feel-0.6` — implementation, build and automation complete; subjective Editor/PIE acceptance pending
 
 **Objective:** prove a responsive action-adventure interaction loop.
 

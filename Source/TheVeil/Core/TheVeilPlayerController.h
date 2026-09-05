@@ -25,7 +25,8 @@ public:
         UInputAction* InLookAction,
         UInputAction* InJumpAction,
         UInputAction* InSprintAction,
-        UInputAction* InCrouchAction);
+        UInputAction* InCrouchAction,
+        UInputAction* InInteractAction = nullptr);
     void ConfigureMappingContextForAutomationTests(UInputMappingContext* InMappingContext);
     void ApplyInputMappingContextForAutomationTests();
     void BindInputComponentForAutomationTests(UInputComponent* TestInputComponent);
@@ -55,6 +56,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="The Veil|Input")
     TObjectPtr<UInputAction> CrouchAction;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="The Veil|Input")
+    TObjectPtr<UInputAction> InteractAction;
+
 private:
     void ApplyInputMappingContext();
     void BindConfiguredInputActions(UInputComponent* InputComponentToBind);
@@ -68,6 +72,7 @@ private:
     void HandleSprintStarted();
     void HandleSprintStopped();
     void HandleCrouchStarted();
+    void HandleInteractStarted();
 
     TWeakObjectPtr<UInputComponent> BoundInputComponent;
     TWeakObjectPtr<UEnhancedInputLocalPlayerSubsystem> RegisteredInputSubsystem;

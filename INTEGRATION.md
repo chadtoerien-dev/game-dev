@@ -2,6 +2,55 @@
 
 This repository is cumulative. Regenerate project files when required and build `TheVeilEditor` before editing dependent Blueprints. The preferred build, test and launch commands are under `scripts/`.
 
+## Milestone 0.6 native interaction loop
+
+Milestone 0.6 adds the first reusable, native development interaction loop. It deliberately does not add final environment art, final UI or hand-edited map assets.
+
+Native classes:
+
+- `UTVInteractionComponent` in `Source/TheVeil/Interaction/`: camera-facing focus trace, range and line-of-sight validation, prompt state, one-shot interaction requests and a short input buffer.
+- `UTVInteractable` in `Source/TheVeil/Interaction/`: Blueprint-facing interaction interface used by development objects and future interactables.
+- `ATheVeilTestDoor` in `Source/TheVeil/Interaction/`: simple native door actor that toggles open and closed through the interface.
+- `ATheVeilInspectableTestObject` in `Source/TheVeil/Interaction/`: simple native inspectable or collectible test object using the same interface.
+- `ATVDevelopmentPromptHUD` in `Source/TheVeil/UI/`: development-only prompt drawing for the current focused target.
+
+`ATheVeilCharacter` owns one `InteractionComponent`. `ATheVeilPlayerController` now supports an optional `InteractAction` and also binds native development fallback keys:
+
+| Input | Behaviour |
+|---|---|
+| `E` | Request one interaction |
+| Gamepad Face Button Left | Request one interaction |
+| optional `IA_Interact` on `Started` | Request one interaction when the Blueprint input asset is later assigned |
+
+The fallback key path preserves the accepted 0.5 Enhanced Input movement shell while allowing 0.6 interaction to be tested before a separate content-automation pass extends `IMC_Player`. Do not add unrelated legacy movement bindings.
+
+Interaction trace defaults:
+
+- range: `320 cm`
+- sweep radius: `14 cm`
+- trace channel: `Visibility`
+- input buffer: `0.16 s`
+
+The trace ignores the owning pawn and accepts only the first blocking hit if that actor implements `UTVInteractable`, is in range and reports that it can currently interact. Blocking geometry therefore prevents focus and activation through walls.
+
+Development prompt:
+
+- `ATheVeilGameMode` sets `HUDClass` to `ATVDevelopmentPromptHUD`.
+- The HUD draws a simple development prompt from the pawn's focused interactable.
+- This is not the final interaction UI and should be replaced or integrated with the future Common UI/conversation layer.
+
+Manual Editor/PIE checklist for 0.6:
+
+1. Open `/Game/Maps/L_Dev_Sandbox`.
+2. Place temporary instances of `ATheVeilTestDoor` and `ATheVeilInspectableTestObject`, or create derived Blueprints if a guarded content setup task has produced them.
+3. Approach each object and confirm the prompt appears only when the object is in range and unobstructed.
+4. Press `E` once and confirm one activation. Repeat with Gamepad Face Button Left.
+5. Try the same interaction from behind blocking geometry and outside range; it must not activate.
+6. Walk around the objects and nearby walls to judge camera collision, retraction and prompt stability.
+7. Run PIE for at least two minutes and exit cleanly.
+
+Known setup boundary: the committed 0.5 manifest still owns only the five movement Input Actions and `IMC_Player`. A later guarded Editor automation task may add `/Game/TheVeil/Input/IA_Interact`; until then, the native fallback keys are the safe non-binary test path.
+
 ## Verified environment
 
 Verified on 19 July 2026 unless otherwise noted:
@@ -11,9 +60,10 @@ Verified on 19 July 2026 unless otherwise noted:
 - MSVC toolchain `14.50.35717`
 - Windows SDK `10.0.22621.0`
 - successful `TheVeilEditor` Development/Win64 build
-- twelve passing `TheVeil.*` automation tests
+- eighteen passing `TheVeil.*` automation tests on the 0.6 branch, including the twelve accepted 0.5 tests
 - strict structural validation of the saved Playable Foundation assets and map integration with zero failures
-- successful final `L_Dev_Sandbox` Editor/PIE acceptance on 19 July 2026, including physical input, camera feel/collision, focus-loss recovery and Product Owner visual approval
+- successful final `L_Dev_Sandbox` Editor/PIE acceptance for 0.5 on 19 July 2026, including physical input, camera feel/collision, focus-loss recovery and Product Owner visual approval
+- 0.6 build and automation complete; 0.6 subjective Editor/PIE interaction feel checks remain human-owned
 
 Build:
 
@@ -298,4 +348,4 @@ Reports and logs under `Saved/` are local evidence and remain excluded from sour
 
 ## Current playable boundary
 
-`/Game/Maps/L_Dev_Sandbox` now provides the accepted 0.5 playable shell. The saved map uses the intended GameMode, the nine manifest-owned input/Blueprint assets are persisted and wired, strict validation reports one loaded PlayerStart with zero placed auto-possessed pawns, all twelve automation tests pass, and the final Editor/PIE gate is accepted. Interaction, embodied contestants, the Tribunal, night-operation content and the maximum-fidelity King’s College environment remain future milestones.
+`/Game/Maps/L_Dev_Sandbox` now provides the accepted 0.5 playable shell. The saved map uses the intended GameMode, the nine manifest-owned input/Blueprint assets are persisted and wired, strict validation reports one loaded PlayerStart with zero placed auto-possessed pawns, all twelve 0.5 automation tests passed, and the final 0.5 Editor/PIE gate is accepted. The native 0.6 interaction source is present on the milestone branch, builds successfully and has eighteen passing `TheVeil.*` automation tests; only subjective 0.6 Editor/PIE interaction and camera-feel acceptance remains. Embodied contestants, the Tribunal, night-operation content and the maximum-fidelity King's College environment remain future milestones.

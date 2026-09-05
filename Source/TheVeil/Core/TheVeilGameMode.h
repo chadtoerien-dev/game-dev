@@ -11,4 +11,9 @@ class THEVEIL_API ATheVeilGameMode : public AGameModeBase
 
 public:
     ATheVeilGameMode();
+
+    virtual void StartPlay() override;
+
+private:
+    void SpawnDevelopmentInteractionActors();
 };

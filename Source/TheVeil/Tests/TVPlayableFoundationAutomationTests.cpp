@@ -16,6 +16,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
+#include "Interaction/TVInteractionComponent.h"
+#include "UI/TVDevelopmentPromptHUD.h"
 #include "UObject/UnrealType.h"
 
 namespace
@@ -101,11 +103,13 @@ bool FTVPlayableCharacterDefaultsTest::RunTest(const FString& Parameters)
     const UCharacterMovementComponent* MovementComponent = Character->GetCharacterMovement();
     const USpringArmComponent* CameraBoom = Character->GetCameraBoom();
     const UCameraComponent* FollowCamera = Character->GetFollowCamera();
+    const UTVInteractionComponent* InteractionComponent = Character->GetInteractionComponent();
 
     TestNotNull(TEXT("Character movement component exists"), MovementComponent);
     TestNotNull(TEXT("Camera boom exists"), CameraBoom);
     TestNotNull(TEXT("Follow camera exists"), FollowCamera);
-    if (MovementComponent == nullptr || CameraBoom == nullptr || FollowCamera == nullptr)
+    TestNotNull(TEXT("Interaction component exists"), InteractionComponent);
+    if (MovementComponent == nullptr || CameraBoom == nullptr || FollowCamera == nullptr || InteractionComponent == nullptr)
     {
         return false;
     }
@@ -155,6 +159,7 @@ bool FTVPlayableGameModeDefaultsTest::RunTest(const FString& Parameters)
     TestTrue(TEXT("GameMode uses The Veil character"), GameMode->DefaultPawnClass.Get() == ATheVeilCharacter::StaticClass());
     TestTrue(TEXT("GameMode uses The Veil player controller"), GameMode->PlayerControllerClass.Get() == ATheVeilPlayerController::StaticClass());
     TestTrue(TEXT("GameMode preserves The Veil GameState"), GameMode->GameStateClass.Get() == ATheVeilGameState::StaticClass());
+    TestTrue(TEXT("GameMode uses the development prompt HUD"), GameMode->HUDClass.Get() == ATVDevelopmentPromptHUD::StaticClass());
     return true;
 }
 

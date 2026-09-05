@@ -5,6 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Interaction/TVInteractionComponent.h"
 
 ATheVeilCharacter::ATheVeilCharacter()
 {
@@ -30,6 +31,8 @@ ATheVeilCharacter::ATheVeilCharacter()
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
     FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
     FollowCamera->bUsePawnControlRotation = false;
+
+    InteractionComponent = CreateDefaultSubobject<UTVInteractionComponent>(TEXT("InteractionComponent"));
 
     ApplyTuning();
 }

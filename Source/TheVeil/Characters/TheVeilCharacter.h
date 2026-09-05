@@ -6,6 +6,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class UTVInteractionComponent;
 
 UCLASS(Blueprintable)
 class THEVEIL_API ATheVeilCharacter : public ACharacter
@@ -48,6 +49,9 @@ public:
     UFUNCTION(BlueprintPure, Category="The Veil|Camera")
     UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+    UFUNCTION(BlueprintPure, Category="The Veil|Interaction")
+    UTVInteractionComponent* GetInteractionComponent() const { return InteractionComponent; }
+
     virtual void Restart() override;
     virtual void PawnClientRestart() override;
 
@@ -60,6 +64,9 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Camera", meta=(AllowPrivateAccess="true"))
     TObjectPtr<UCameraComponent> FollowCamera;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Interaction", meta=(AllowPrivateAccess="true"))
+    TObjectPtr<UTVInteractionComponent> InteractionComponent;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="The Veil|Movement|Tuning", meta=(ClampMin="0.0", Units="cm/s"))
     float WalkSpeed = 500.0f;

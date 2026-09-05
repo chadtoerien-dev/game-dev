@@ -6,7 +6,9 @@
 #include "Engine/LocalPlayer.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
+#include "InputCoreTypes.h"
 #include "InputMappingContext.h"
+#include "Interaction/TVInteractionComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogTheVeilPlayerController, Log, All);
 
@@ -95,6 +97,21 @@ void ATheVeilPlayerController::BindConfiguredInputActions(UInputComponent* Input
         UE_LOG(LogTheVeilPlayerController, Warning, TEXT("CrouchAction is not assigned on %s."), *GetNameSafe(this));
     }
 
+    if (InteractAction != nullptr)
+    {
+        EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ATheVeilPlayerController::HandleInteractStarted);
+    }
+    else
+    {
+        UE_LOG(
+            LogTheVeilPlayerController,
+            Log,
+            TEXT("InteractAction is not assigned on %s; using native development fallback keys."), *GetNameSafe(this));
+
+        InputComponentToBind->BindKey(EKeys::E, IE_Pressed, this, &ATheVeilPlayerController::HandleInteractStarted);
+        InputComponentToBind->BindKey(EKeys::Gamepad_FaceButton_Left, IE_Pressed, this, &ATheVeilPlayerController::HandleInteractStarted);
+    }
+
     BoundInputComponent = InputComponentToBind;
 }
 
@@ -126,13 +143,15 @@ void ATheVeilPlayerController::ConfigureInputActionsForAutomationTests(
     UInputAction* InLookAction,
     UInputAction* InJumpAction,
     UInputAction* InSprintAction,
-    UInputAction* InCrouchAction)
+    UInputAction* InCrouchAction,
+    UInputAction* InInteractAction)
 {
     MoveAction = InMoveAction;
     LookAction = InLookAction;
     JumpAction = InJumpAction;
     SprintAction = InSprintAction;
     CrouchAction = InCrouchAction;
+    InteractAction = InInteractAction;
 }
 
 void ATheVeilPlayerController::BindInputComponentForAutomationTests(
@@ -280,5 +299,16 @@ void ATheVeilPlayerController::HandleCrouchStarted()
     if (ATheVeilCharacter* VeilCharacter = Cast<ATheVeilCharacter>(GetPawn()))
     {
         VeilCharacter->ToggleCrouch();
+    }
+}
+
+void ATheVeilPlayerController::HandleInteractStarted()
+{
+    const APawn* ControlledPawn = GetPawn();
+    UTVInteractionComponent* InteractionComponent =
+        ControlledPawn != nullptr ? ControlledPawn->FindComponentByClass<UTVInteractionComponent>() : nullptr;
+    if (InteractionComponent != nullptr)
+    {
+        InteractionComponent->RequestInteraction();
     }
 }
