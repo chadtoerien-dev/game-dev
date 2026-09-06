@@ -158,7 +158,11 @@ bool UTVInteractionComponent::BuildTrace(FVector& OutStart, FVector& OutEnd) con
     if (const UCameraComponent* Camera = Owner->FindComponentByClass<UCameraComponent>())
     {
         OutStart = Camera->GetComponentLocation();
-        OutEnd = OutStart + Camera->GetForwardVector() * InteractionRange;
+        // Interaction range is measured from the pawn, but the trace starts at the
+        // third-person camera behind it. Include that separation so a valid target
+        // in front of the pawn is not unreachable from the camera trace.
+        const float CameraToOwnerDistance = FVector::Distance(OutStart, Owner->GetActorLocation());
+        OutEnd = OutStart + Camera->GetForwardVector() * (InteractionRange + CameraToOwnerDistance);
         return true;
     }
 

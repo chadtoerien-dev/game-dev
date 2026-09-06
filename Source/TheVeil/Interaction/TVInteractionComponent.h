@@ -55,6 +55,7 @@ public:
     void SetTraceHitActorForAutomationTests(AActor* HitActor);
     void ClearTraceHitActorForAutomationTests();
     void SetInteractionRangeForAutomationTests(float InInteractionRange);
+    bool BuildTraceForAutomationTests(FVector& OutStart, FVector& OutEnd) const { return BuildTrace(OutStart, OutEnd); }
 #endif
 
     UPROPERTY(BlueprintAssignable, Category="The Veil|Interaction")

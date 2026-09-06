@@ -3,6 +3,7 @@
 #include "Misc/AutomationTest.h"
 
 #include "Characters/TheVeilCharacter.h"
+#include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Core/TheVeilPlayerController.h"
 #include "EnhancedInputComponent.h"
@@ -71,6 +72,46 @@ AActor* SpawnVisibilityBlocker(UWorld* World, const FVector& Location)
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(
+    FTVInteractionThirdPersonCameraReachTest,
+    "TheVeil.Interaction.ThirdPersonCameraTraceReachesPawnRange",
+    EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FTVInteractionThirdPersonCameraReachTest::RunTest(const FString& Parameters)
+{
+    FTVScopedInteractionTestWorld TestWorld;
+    ATheVeilCharacter* Character = SpawnInteractionTestActor<ATheVeilCharacter>(TestWorld.Get());
+    TestNotNull(TEXT("Character spawns for camera reach regression"), Character);
+    if (Character == nullptr)
+    {
+        return false;
+    }
+
+    UTVInteractionComponent* InteractionComponent = Character->GetInteractionComponent();
+    UCameraComponent* Camera = Character->FindComponentByClass<UCameraComponent>();
+    ATheVeilInspectableTestObject* Target = SpawnInteractionTestActor<ATheVeilInspectableTestObject>(
+        TestWorld.Get(), FVector(200.0f, 0.0f, 70.0f));
+    TestNotNull(TEXT("Character camera exists"), Camera);
+    TestNotNull(TEXT("A pawn-range target exists"), Target);
+    if (InteractionComponent == nullptr || Camera == nullptr || Target == nullptr)
+    {
+        return false;
+    }
+
+    Camera->SetWorldLocationAndRotation(FVector(-420.0f, 0.0f, 120.0f), FRotator::ZeroRotator);
+    FVector TraceStart;
+    FVector TraceEnd;
+    TestTrue(TEXT("Third-person interaction trace can be built"), InteractionComponent->BuildTraceForAutomationTests(TraceStart, TraceEnd));
+    const float CameraToPawnDistance = FVector::Distance(TraceStart, Character->GetActorLocation());
+    TestTrue(TEXT("Regression setup has a meaningful third-person camera offset"), CameraToPawnDistance > 400.0f);
+    TestTrue(
+        TEXT("Trace includes camera-to-pawn separation before the pawn-relative interaction range"),
+        FVector::Distance(TraceStart, TraceEnd) >= CameraToPawnDistance + 319.0f);
+    InteractionComponent->UpdateFocusedInteractable();
+    TestEqual(TEXT("Actual camera trace focuses a target inside pawn-relative range"), InteractionComponent->GetFocusedActor(), Cast<AActor>(Target));
+    return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(
     FTVInteractionComponentFocusTest,
     "TheVeil.Interaction.FocusPromptAndActivation",
     EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
@@ -102,7 +143,7 @@ bool FTVInteractionComponentFocusTest::RunTest(const FString& Parameters)
     TestEqual(
         TEXT("Inspectable object direct prompt is stable"),
         TestObject->GetInteractionPrompt_Implementation(Character).ToString(),
-        FString(TEXT("Inspect test object")));
+        FString(TEXT("Inspect estate seal")));
     TestTrue(
         TEXT("Inspectable object starts inside default interaction range"),
         FVector::DistSquared(Character->GetActorLocation(), TestObject->GetActorLocation()) <= FMath::Square(320.0f));
@@ -111,7 +152,7 @@ bool FTVInteractionComponentFocusTest::RunTest(const FString& Parameters)
     InteractionComponent->UpdateFocusedInteractable();
 
     TestEqual(TEXT("Trace focuses the inspectable object"), InteractionComponent->GetFocusedActor(), Cast<AActor>(TestObject));
-    TestEqual(TEXT("Prompt comes from the focused object"), InteractionComponent->GetCurrentPrompt().ToString(), FString(TEXT("Inspect test object")));
+    TestEqual(TEXT("Prompt comes from the focused object"), InteractionComponent->GetCurrentPrompt().ToString(), FString(TEXT("Inspect estate seal")));
 
     const ETVInteractionAttemptResult Result = InteractionComponent->TryInteract();
     TestEqual(TEXT("Focused object interaction succeeds"), Result, ETVInteractionAttemptResult::Succeeded);

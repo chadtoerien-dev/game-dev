@@ -13,6 +13,12 @@ UStaticMesh* LoadDevelopmentCubeMesh()
     return CubeMesh.Succeeded() ? CubeMesh.Object : nullptr;
 }
 
+UStaticMesh* LoadDevelopmentSphereMesh()
+{
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+    return SphereMesh.Succeeded() ? SphereMesh.Object : nullptr;
+}
+
 void ConfigureDevelopmentMesh(UStaticMeshComponent* MeshComponent)
 {
     if (MeshComponent == nullptr)
@@ -61,6 +67,28 @@ ATheVeilTestDoor::ATheVeilTestDoor()
     DoorMesh->SetupAttachment(InteractionBounds);
     ConfigureDevelopmentMesh(DoorMesh);
     DoorMesh->SetRelativeScale3D(FVector(0.18f, 1.2f, 2.2f));
+
+    LeftFrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftFrameMesh"));
+    LeftFrameMesh->SetupAttachment(SceneRoot);
+    ConfigureDevelopmentMesh(LeftFrameMesh);
+    LeftFrameMesh->SetRelativeLocation(FVector(0.0f, -12.0f, 0.0f));
+    LeftFrameMesh->SetRelativeScale3D(FVector(0.28f, 0.12f, 2.45f));
+    RightFrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightFrameMesh"));
+    RightFrameMesh->SetupAttachment(SceneRoot);
+    ConfigureDevelopmentMesh(RightFrameMesh);
+    RightFrameMesh->SetRelativeLocation(FVector(0.0f, 252.0f, 0.0f));
+    RightFrameMesh->SetRelativeScale3D(FVector(0.28f, 0.12f, 2.45f));
+    HeaderFrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HeaderFrameMesh"));
+    HeaderFrameMesh->SetupAttachment(SceneRoot);
+    ConfigureDevelopmentMesh(HeaderFrameMesh);
+    HeaderFrameMesh->SetRelativeLocation(FVector(0.0f, 120.0f, 122.0f));
+    HeaderFrameMesh->SetRelativeScale3D(FVector(0.28f, 1.44f, 0.14f));
+    HandleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HandleMesh"));
+    HandleMesh->SetupAttachment(InteractionBounds);
+    ConfigureDevelopmentMesh(HandleMesh);
+    HandleMesh->SetStaticMesh(LoadDevelopmentSphereMesh());
+    HandleMesh->SetRelativeLocation(FVector(-24.0f, 86.0f, 0.0f));
+    HandleMesh->SetRelativeScale3D(FVector(0.10f));
 }
 
 FText ATheVeilTestDoor::GetInteractionPrompt_Implementation(const AActor* Interactor) const
@@ -109,19 +137,27 @@ ATheVeilInspectableTestObject::ATheVeilInspectableTestObject()
 
     InteractionBounds = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBounds"));
     SetRootComponent(InteractionBounds);
-    ConfigureInteractionBounds(InteractionBounds, FVector(35.0f, 35.0f, 35.0f));
+    ConfigureInteractionBounds(InteractionBounds, FVector(48.0f, 48.0f, 70.0f));
 
     ObjectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectMesh"));
     ObjectMesh->SetupAttachment(InteractionBounds);
     ConfigureDevelopmentMesh(ObjectMesh);
-    ObjectMesh->SetRelativeScale3D(FVector(0.35f, 0.35f, 0.35f));
+    ObjectMesh->SetStaticMesh(LoadDevelopmentSphereMesh());
+    ObjectMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 25.0f));
+    ObjectMesh->SetRelativeScale3D(FVector(0.24f));
+
+    PedestalMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PedestalMesh"));
+    PedestalMesh->SetupAttachment(InteractionBounds);
+    ConfigureDevelopmentMesh(PedestalMesh);
+    PedestalMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -20.0f));
+    PedestalMesh->SetRelativeScale3D(FVector(0.42f, 0.42f, 0.70f));
 }
 
 FText ATheVeilInspectableTestObject::GetInteractionPrompt_Implementation(const AActor* Interactor) const
 {
     return bCollectOnInteract
-        ? FText::FromString(TEXT("Collect test object"))
-        : FText::FromString(TEXT("Inspect test object"));
+        ? FText::FromString(TEXT("Collect estate seal"))
+        : FText::FromString(TEXT("Inspect estate seal"));
 }
 
 bool ATheVeilInspectableTestObject::CanInteract_Implementation(

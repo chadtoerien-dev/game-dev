@@ -41,3 +41,12 @@ Partial Product Owner evidence, 6 September 2026:
 ## Merge checkpoint
 
 Do not merge to `main` until the milestone 0.6 independent review verdict is recorded, the Editor/PIE checks above pass, and Chad Toerien explicitly approves the merge.
+
+## 0.7a corrective PIE retest — 6 September 2026
+
+The first 0.7a PIE interaction check failed because the third-person camera offset consumed the interaction ray. The reviewed correction is built and all twenty tests pass.
+
+1. Confirm the player and three contestants now have clearly composed humanoid silhouettes rather than eggs.
+2. Aim at the framed door, estate seal and each contestant from normal close interaction distance; confirm the prompt appears.
+3. Press `E` once on each target; confirm the door toggles, the seal responds and each contestant shows its distinct typed greeting.
+4. Confirm a wall still blocks interaction and distant targets remain out of range.

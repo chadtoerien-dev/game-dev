@@ -39,6 +39,12 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Contestant")
     TObjectPtr<UStaticMeshComponent> PlaceholderMesh;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Contestant") TObjectPtr<UStaticMeshComponent> HeadMesh;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Contestant") TObjectPtr<UStaticMeshComponent> LeftArmMesh;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Contestant") TObjectPtr<UStaticMeshComponent> RightArmMesh;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Contestant") TObjectPtr<UStaticMeshComponent> LeftLegMesh;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Contestant") TObjectPtr<UStaticMeshComponent> RightLegMesh;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Contestant")
     TObjectPtr<UTVContestantStateComponent> ContestantState;
 

@@ -9,6 +9,18 @@
 #include "Social/TVContestantStateComponent.h"
 #include "UObject/ConstructorHelpers.h"
 
+namespace
+{
+void ConfigureBodyPart(UStaticMeshComponent* Component, USceneComponent* Parent, UStaticMesh* Mesh, const FVector& Location, const FVector& Scale)
+{
+    Component->SetupAttachment(Parent);
+    Component->SetStaticMesh(Mesh);
+    Component->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    Component->SetRelativeLocation(Location);
+    Component->SetRelativeScale3D(Scale);
+}
+}
+
 ATVDevelopmentContestant::ATVDevelopmentContestant()
 {
     PrimaryActorTick.bCanEverTick = true;
@@ -21,11 +33,18 @@ ATVDevelopmentContestant::ATVDevelopmentContestant()
     PlaceholderMesh->SetupAttachment(GetCapsuleComponent());
     PlaceholderMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
-    if (SphereMesh.Succeeded())
-    {
-        PlaceholderMesh->SetStaticMesh(SphereMesh.Object);
-    }
-    PlaceholderMesh->SetRelativeScale3D(FVector(0.55f, 0.55f, 1.65f));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMesh(TEXT("/Engine/BasicShapes/Cube.Cube"));
+    ConfigureBodyPart(PlaceholderMesh, GetCapsuleComponent(), CubeMesh.Object, FVector(0.0f, 0.0f, 18.0f), FVector(0.38f, 0.24f, 0.55f));
+    HeadMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HeadMesh"));
+    ConfigureBodyPart(HeadMesh, GetCapsuleComponent(), SphereMesh.Object, FVector(0.0f, 0.0f, 63.0f), FVector(0.24f));
+    LeftArmMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftArmMesh"));
+    ConfigureBodyPart(LeftArmMesh, GetCapsuleComponent(), CubeMesh.Object, FVector(0.0f, -29.0f, 16.0f), FVector(0.13f, 0.13f, 0.48f));
+    RightArmMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightArmMesh"));
+    ConfigureBodyPart(RightArmMesh, GetCapsuleComponent(), CubeMesh.Object, FVector(0.0f, 29.0f, 16.0f), FVector(0.13f, 0.13f, 0.48f));
+    LeftLegMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftLegMesh"));
+    ConfigureBodyPart(LeftLegMesh, GetCapsuleComponent(), CubeMesh.Object, FVector(0.0f, -12.0f, -48.0f), FVector(0.15f, 0.16f, 0.55f));
+    RightLegMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightLegMesh"));
+    ConfigureBodyPart(RightLegMesh, GetCapsuleComponent(), CubeMesh.Object, FVector(0.0f, 12.0f, -48.0f), FVector(0.15f, 0.16f, 0.55f));
 
     ContestantState = CreateDefaultSubobject<UTVContestantStateComponent>(TEXT("ContestantState"));
     Memory = CreateDefaultSubobject<UTVMemoryComponent>(TEXT("Memory"));
@@ -41,6 +60,16 @@ bool ATVDevelopmentContestant::InitialiseContestant(FName InContestantId, const 
     DisplayName = InDisplayName;
     Greeting = InGreeting;
     PatrolOffset = InPatrolOffset;
+    if (InContestantId == TEXT("Marcus"))
+    {
+        PlaceholderMesh->SetRelativeScale3D(FVector(0.46f, 0.28f, 0.60f));
+        HeadMesh->SetRelativeScale3D(FVector(0.27f));
+    }
+    else if (InContestantId == TEXT("Beatrice"))
+    {
+        PlaceholderMesh->SetRelativeScale3D(FVector(0.34f, 0.25f, 0.58f));
+        HeadMesh->SetRelativeScale3D(FVector(0.22f, 0.25f, 0.22f));
+    }
     return true;
 }
 

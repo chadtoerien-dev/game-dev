@@ -46,6 +46,11 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Interaction")
     TObjectPtr<UStaticMeshComponent> DoorMesh;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Interaction") TObjectPtr<UStaticMeshComponent> LeftFrameMesh;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Interaction") TObjectPtr<UStaticMeshComponent> RightFrameMesh;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Interaction") TObjectPtr<UStaticMeshComponent> HeaderFrameMesh;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Interaction") TObjectPtr<UStaticMeshComponent> HandleMesh;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="The Veil|Interaction|Tuning")
     float OpenYawDegrees = 85.0f;
 
@@ -84,6 +89,8 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Interaction")
     TObjectPtr<UStaticMeshComponent> ObjectMesh;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="The Veil|Interaction") TObjectPtr<UStaticMeshComponent> PedestalMesh;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="The Veil|Interaction")
     bool bCollectOnInteract = false;
