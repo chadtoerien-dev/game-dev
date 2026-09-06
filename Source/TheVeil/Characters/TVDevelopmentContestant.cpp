@@ -25,6 +25,7 @@ ATVDevelopmentContestant::ATVDevelopmentContestant()
 {
     PrimaryActorTick.bCanEverTick = true;
     GetCapsuleComponent()->InitCapsuleSize(36.0f, 88.0f);
+    GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
     GetCharacterMovement()->MaxWalkSpeed = 115.0f;
     GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 240.0f, 0.0f);

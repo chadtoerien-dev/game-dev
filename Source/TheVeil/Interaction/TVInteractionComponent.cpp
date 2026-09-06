@@ -110,6 +110,14 @@ void UTVInteractionComponent::UpdateFocusedInteractable()
         return;
     }
 
+    UE_LOG(
+        LogTemp,
+        VeryVerbose,
+        TEXT("Interaction trace rejected actor=%s component=%s reason=%s"),
+        *GetNameSafe(HitActor),
+        *GetNameSafe(Hit.GetComponent()),
+        *FailureReason.ToString());
+
     ClearFocusedActor();
 }
 
@@ -326,6 +334,12 @@ void UTVInteractionComponent::SetFocusedActor(AActor* NewFocusedActor, const FTe
 
     FocusedActor = NewFocusedActor;
     CurrentPrompt = NewPrompt;
+    UE_LOG(
+        LogTemp,
+        Display,
+        TEXT("Interaction focus acquired actor=%s prompt=%s"),
+        *GetNameSafe(NewFocusedActor),
+        *NewPrompt.ToString());
     OnFocusedInteractableChanged.Broadcast(FocusedActor, CurrentPrompt);
 }
 
