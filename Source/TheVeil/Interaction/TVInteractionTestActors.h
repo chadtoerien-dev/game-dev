@@ -20,6 +20,7 @@ public:
     virtual FText GetInteractionPrompt_Implementation(const AActor* Interactor) const override;
     virtual bool CanInteract_Implementation(const AActor* Interactor, FText& OutFailureReason) const override;
     virtual bool Interact_Implementation(AActor* Interactor) override;
+    virtual FText GetInteractionResultText_Implementation(const AActor* Interactor) const override;
 
     UFUNCTION(BlueprintPure, Category="The Veil|Interaction")
     bool IsOpen() const { return bIsOpen; }
@@ -76,6 +77,7 @@ public:
     virtual FText GetInteractionPrompt_Implementation(const AActor* Interactor) const override;
     virtual bool CanInteract_Implementation(const AActor* Interactor, FText& OutFailureReason) const override;
     virtual bool Interact_Implementation(AActor* Interactor) override;
+    virtual FText GetInteractionResultText_Implementation(const AActor* Interactor) const override;
 
     UFUNCTION(BlueprintPure, Category="The Veil|Interaction")
     int32 GetInteractionCount() const { return InteractionCount; }

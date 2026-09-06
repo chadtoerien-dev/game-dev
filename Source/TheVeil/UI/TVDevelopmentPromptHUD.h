@@ -27,4 +27,10 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="The Veil|Interaction", meta=(ClampMin="0.0", ClampMax="1.0"))
     float PromptScreenY = 0.78f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="The Veil|Interaction", meta=(ClampMin="0.0", ClampMax="1.0"))
+    float FeedbackScreenY = 0.68f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="The Veil|Interaction")
+    FLinearColor FeedbackColour = FLinearColor(0.35f, 0.9f, 1.0f, 1.0f);
 };

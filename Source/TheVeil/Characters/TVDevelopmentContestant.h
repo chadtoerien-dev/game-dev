@@ -23,6 +23,7 @@ public:
     virtual FText GetInteractionPrompt_Implementation(const AActor* Interactor) const override;
     virtual bool CanInteract_Implementation(const AActor* Interactor, FText& OutFailureReason) const override;
     virtual bool Interact_Implementation(AActor* Interactor) override;
+    virtual FText GetInteractionResultText_Implementation(const AActor* Interactor) const override;
 
     bool InitialiseContestant(FName InContestantId, const FText& InDisplayName, const FText& InGreeting, const FVector& InPatrolOffset);
 

@@ -64,6 +64,7 @@ bool FTVEmbodiedContestantIdentityTest::RunTest(const FString& Parameters)
         TestTrue(TEXT("Contestant is interactable"), Contestant->GetClass()->ImplementsInterface(UTVInteractable::StaticClass()));
         TestTrue(TEXT("Interaction succeeds"), Contestant->Interact_Implementation(nullptr));
         TestTrue(TEXT("Interaction records spoken state"), Contestant->HasSpokenToPlayer());
+        TestTrue(TEXT("Contestant provides typed interaction-result copy"), !Contestant->GetInteractionResultText_Implementation(nullptr).IsEmpty());
         UniqueIds.Add(Contestant->GetContestantId());
     }
 

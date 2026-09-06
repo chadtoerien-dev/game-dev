@@ -23,4 +23,7 @@ public:
 
     UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="The Veil|Interaction")
     bool Interact(AActor* Interactor);
+
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="The Veil|Interaction")
+    FText GetInteractionResultText(const AActor* Interactor) const;
 };

@@ -109,15 +109,12 @@ bool ATVDevelopmentContestant::CanInteract_Implementation(const AActor* Interact
 bool ATVDevelopmentContestant::Interact_Implementation(AActor* Interactor)
 {
     bHasSpokenToPlayer = true;
-    if (GEngine != nullptr)
-    {
-        GEngine->AddOnScreenDebugMessage(
-            static_cast<uint64>(GetUniqueID()),
-            4.0f,
-            FColor::Cyan,
-            FText::Format(NSLOCTEXT("TheVeil", "DevelopmentGreeting", "{0}: {1}"), DisplayName, Greeting).ToString());
-    }
     return true;
+}
+
+FText ATVDevelopmentContestant::GetInteractionResultText_Implementation(const AActor* Interactor) const
+{
+    return FText::Format(NSLOCTEXT("TheVeil", "DevelopmentGreeting", "{0}: {1}"), DisplayName, Greeting);
 }
 
 FName ATVDevelopmentContestant::GetContestantId() const

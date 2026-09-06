@@ -126,6 +126,11 @@ bool ATheVeilTestDoor::Interact_Implementation(AActor* Interactor)
     return true;
 }
 
+FText ATheVeilTestDoor::GetInteractionResultText_Implementation(const AActor* Interactor) const
+{
+    return bIsOpen ? FText::FromString(TEXT("The door opens.")) : FText::FromString(TEXT("The door closes."));
+}
+
 float ATheVeilTestDoor::GetDoorPanelYaw() const
 {
     return HingeRoot != nullptr ? HingeRoot->GetRelativeRotation().Yaw : 0.0f;
@@ -190,4 +195,9 @@ bool ATheVeilInspectableTestObject::Interact_Implementation(AActor* Interactor)
         SetActorEnableCollision(false);
     }
     return true;
+}
+
+FText ATheVeilInspectableTestObject::GetInteractionResultText_Implementation(const AActor* Interactor) const
+{
+    return FText::FromString(TEXT("The estate seal bears a scratched-out family motto."));
 }

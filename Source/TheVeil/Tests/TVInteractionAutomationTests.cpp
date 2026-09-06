@@ -157,6 +157,11 @@ bool FTVInteractionComponentFocusTest::RunTest(const FString& Parameters)
     const ETVInteractionAttemptResult Result = InteractionComponent->TryInteract();
     TestEqual(TEXT("Focused object interaction succeeds"), Result, ETVInteractionAttemptResult::Succeeded);
     TestEqual(TEXT("A single interaction request activates once"), TestObject->GetInteractionCount(), 1);
+    TestTrue(TEXT("Successful non-door interaction creates visible feedback state"), InteractionComponent->HasVisibleInteractionFeedback());
+    TestEqual(
+        TEXT("Inspectable feedback is persisted for HUD presentation"),
+        InteractionComponent->GetLastInteractionFeedback().ToString(),
+        FString(TEXT("The estate seal bears a scratched-out family motto.")));
     return true;
 }
 

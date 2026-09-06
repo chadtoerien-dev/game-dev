@@ -49,6 +49,12 @@ public:
     UFUNCTION(BlueprintPure, Category="The Veil|Interaction")
     bool HasFocusedInteractable() const { return IsValid(FocusedActor); }
 
+    UFUNCTION(BlueprintPure, Category="The Veil|Interaction")
+    FText GetLastInteractionFeedback() const;
+
+    UFUNCTION(BlueprintPure, Category="The Veil|Interaction")
+    bool HasVisibleInteractionFeedback() const;
+
 #if WITH_DEV_AUTOMATION_TESTS
     void SetTraceOverrideForAutomationTests(const FVector& TraceStart, const FVector& TraceDirection);
     void ClearTraceOverrideForAutomationTests();
@@ -85,6 +91,7 @@ private:
     FText GetPromptFromInteractable(AActor* Candidate) const;
     bool CanInteractWithActor(AActor* Candidate, AActor* Interactor, FText& OutFailureReason) const;
     bool ExecuteInteraction(AActor* Candidate, AActor* Interactor) const;
+    FText GetResultTextFromInteractable(AActor* Candidate) const;
     void SetFocusedActor(AActor* NewFocusedActor, const FText& NewPrompt);
     void ClearFocusedActor();
     ETVInteractionAttemptResult TryInteractFocusedActor();
@@ -97,6 +104,11 @@ private:
 
     bool bHasBufferedInteraction = false;
     double BufferedInteractionExpiresAt = 0.0;
+
+    UPROPERTY(Transient)
+    FText LastInteractionFeedback;
+
+    double InteractionFeedbackExpiresAt = 0.0;
 
 #if WITH_DEV_AUTOMATION_TESTS
     bool bUseAutomationTraceOverride = false;

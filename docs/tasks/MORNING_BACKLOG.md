@@ -50,3 +50,5 @@ The first 0.7a PIE interaction check failed because the third-person camera offs
 2. Aim at the framed door, estate seal and each contestant from normal close interaction distance; confirm the prompt appears.
 3. Press `E` once on each target; confirm the door toggles, the seal responds and each contestant shows its distinct typed greeting.
 4. Confirm a wall still blocks interaction and distant targets remain out of range.
+
+Second-run note: door activation passed and prompts rendered, but the seal and contestant actions had no visible response. The new retest must specifically confirm that pressing `E` displays a cyan, dark-backed result message for four seconds: an estate-seal observation for the seal and a named greeting for each contestant.

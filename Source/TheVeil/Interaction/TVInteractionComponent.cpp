@@ -286,6 +286,37 @@ bool UTVInteractionComponent::ExecuteInteraction(AActor* Candidate, AActor* Inte
     return false;
 }
 
+FText UTVInteractionComponent::GetResultTextFromInteractable(AActor* Candidate) const
+{
+    AActor* Owner = GetOwner();
+    if (!IsValid(Candidate))
+    {
+        return FText::GetEmpty();
+    }
+
+    const ITVInteractable* NativeInteractable = Cast<ITVInteractable>(Candidate);
+    if (NativeInteractable != nullptr && Candidate->GetClass()->ClassGeneratedBy == nullptr)
+    {
+        return NativeInteractable->GetInteractionResultText_Implementation(Owner);
+    }
+    if (Candidate->GetClass()->ImplementsInterface(UTVInteractable::StaticClass()))
+    {
+        return ITVInteractable::Execute_GetInteractionResultText(Candidate, Owner);
+    }
+    return FText::GetEmpty();
+}
+
+FText UTVInteractionComponent::GetLastInteractionFeedback() const
+{
+    return HasVisibleInteractionFeedback() ? LastInteractionFeedback : FText::GetEmpty();
+}
+
+bool UTVInteractionComponent::HasVisibleInteractionFeedback() const
+{
+    const UWorld* World = GetWorld();
+    return World != nullptr && !LastInteractionFeedback.IsEmpty() && World->GetTimeSeconds() <= InteractionFeedbackExpiresAt;
+}
+
 void UTVInteractionComponent::SetFocusedActor(AActor* NewFocusedActor, const FText& NewPrompt)
 {
     if (FocusedActor == NewFocusedActor && CurrentPrompt.EqualTo(NewPrompt))
@@ -336,6 +367,13 @@ ETVInteractionAttemptResult UTVInteractionComponent::TryInteractFocusedActor()
     const bool bInteracted = ExecuteInteraction(Target, GetOwner());
     if (bInteracted)
     {
+        LastInteractionFeedback = GetResultTextFromInteractable(Target);
+        UWorld* World = GetWorld();
+        if (World != nullptr && !LastInteractionFeedback.IsEmpty())
+        {
+            InteractionFeedbackExpiresAt = World->GetTimeSeconds() + 4.0;
+            UE_LOG(LogTemp, Display, TEXT("Interaction feedback: %s"), *LastInteractionFeedback.ToString());
+        }
         UpdateFocusedInteractable();
         return ETVInteractionAttemptResult::Succeeded;
     }
