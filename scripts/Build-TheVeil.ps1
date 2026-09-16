@@ -32,7 +32,7 @@ $BuildArguments = @(
     "-Project=$Project"
     "-WaitMutex"
     "-2026"
-    "-VCToolchainVersion=$ToolchainVersion"
+    "-CompilerVersion=$ToolchainVersion"
     "-architecture=x64"
 )
 
