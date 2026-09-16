@@ -1,5 +1,13 @@
 # Integration Guide — The Veil 0.5 Native Playable Foundation
 
+## 16 September 2026 delivery verification
+
+The active complete-level contract is `docs/tasks/playable-level-delivery.md`; visual acceptance is defined in `docs/production/VISUAL_REALISM_ACCEPTANCE.md`. Neither is a completion claim.
+
+The build helper now enforces its requested MSVC compiler through `-CompilerVersion`. The approved default remains 14.50.35717, which is unavailable on the current machine. An explicit `-ToolchainVersion 14.51.36231` override has compiled and linked the editor module successfully, with compiler/engine warnings. This diagnostic override does not approve a baseline change. See `docs/evidence/2026-09-16-delivery-baseline.md` for evidence and limitations.
+
+`Run-TheVeilTests.ps1` now requires Python 3 (override the command with `-PythonExecutable` if needed) and validates the exported report before reporting success. Expected tests are derived from literal simple C++ registrations; unsupported forms fail explicitly. Full and targeted runs must contain every expected test with zero warnings, failures or skips. Validator regression command: `python -m unittest discover -s scripts/Automation -p test_validate_report.py`.
+
 This repository is cumulative. Regenerate project files when required and build `TheVeilEditor` before editing dependent Blueprints. The preferred build, test and launch commands are under `scripts/`.
 
 ## Milestone 0.6 native interaction loop
