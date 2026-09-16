@@ -236,7 +236,7 @@ FText UTVInteractionComponent::GetPromptFromInteractable(AActor* Candidate) cons
     }
 
     const ITVInteractable* NativeInteractable = Cast<ITVInteractable>(Candidate);
-    if (NativeInteractable != nullptr && Candidate->GetClass()->ClassGeneratedBy == nullptr)
+    if (NativeInteractable != nullptr && !Candidate->GetClass()->HasAnyClassFlags(CLASS_CompiledFromBlueprint))
     {
         return NativeInteractable->GetInteractionPrompt_Implementation(Owner);
     }
@@ -260,7 +260,7 @@ bool UTVInteractionComponent::CanInteractWithActor(
     }
 
     const ITVInteractable* NativeInteractable = Cast<ITVInteractable>(Candidate);
-    if (NativeInteractable != nullptr && Candidate->GetClass()->ClassGeneratedBy == nullptr)
+    if (NativeInteractable != nullptr && !Candidate->GetClass()->HasAnyClassFlags(CLASS_CompiledFromBlueprint))
     {
         return NativeInteractable->CanInteract_Implementation(Interactor, OutFailureReason);
     }
@@ -281,7 +281,7 @@ bool UTVInteractionComponent::ExecuteInteraction(AActor* Candidate, AActor* Inte
     }
 
     ITVInteractable* NativeInteractable = Cast<ITVInteractable>(Candidate);
-    if (NativeInteractable != nullptr && Candidate->GetClass()->ClassGeneratedBy == nullptr)
+    if (NativeInteractable != nullptr && !Candidate->GetClass()->HasAnyClassFlags(CLASS_CompiledFromBlueprint))
     {
         return NativeInteractable->Interact_Implementation(Interactor);
     }
@@ -303,7 +303,7 @@ FText UTVInteractionComponent::GetResultTextFromInteractable(AActor* Candidate) 
     }
 
     const ITVInteractable* NativeInteractable = Cast<ITVInteractable>(Candidate);
-    if (NativeInteractable != nullptr && Candidate->GetClass()->ClassGeneratedBy == nullptr)
+    if (NativeInteractable != nullptr && !Candidate->GetClass()->HasAnyClassFlags(CLASS_CompiledFromBlueprint))
     {
         return NativeInteractable->GetInteractionResultText_Implementation(Owner);
     }
