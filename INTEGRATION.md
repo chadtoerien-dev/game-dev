@@ -2,6 +2,8 @@
 
 ## 16 September 2026 delivery verification
 
+The first Windows Development archive is available under `Saved/Packages/Development-20260916/Windows`. Copy/run the entire directory, not the executable alone. Build/cook/stage/archive, non-rendered startup and a short rendered startup probe passed after the runtime interaction-dispatch correction. This is the current sandbox prototype, not the completed level. See `docs/evidence/2026-09-16-first-windows-package.md` for exact evidence and visual limitations.
+
 The active complete-level contract is `docs/tasks/playable-level-delivery.md`; visual acceptance is defined in `docs/production/VISUAL_REALISM_ACCEPTANCE.md`. Neither is a completion claim.
 
 The build helper now enforces its requested MSVC compiler through `-CompilerVersion`. The approved default remains 14.50.35717, which is unavailable on the current machine. An explicit `-ToolchainVersion 14.51.36231` override has compiled and linked the editor module successfully, with compiler/engine warnings. This diagnostic override does not approve a baseline change. See `docs/evidence/2026-09-16-delivery-baseline.md` for evidence and limitations.

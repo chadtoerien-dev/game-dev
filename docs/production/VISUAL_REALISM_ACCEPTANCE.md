@@ -41,4 +41,4 @@ For each category retain score, evidence paths/timecodes, observed strengths, sp
 
 ## Current assessment
 
-Unscored: no current representative capture set was inspected for this goal. Existing placeholder implementation does not establish AAA realism or an 8/10 result. No numeric score is claimed.
+Overall unscored: the first packaged startup still was inspected on 16 September; see docs/evidence/2026-09-16-first-windows-package.md for provisional visible-sample scores and its limits. It shows explicit greybox placeholders and fails the placeholder gate. Required motion, locations, full cast and lighting conditions remain unassessed; no overall or passing score is claimed.
